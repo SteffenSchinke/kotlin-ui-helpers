@@ -1,4 +1,4 @@
-package de.schinke.steffen.ui.helper
+package de.schinke.steffen.ui.interfaces
 
 import androidx.navigation.NamedNavArgument
 

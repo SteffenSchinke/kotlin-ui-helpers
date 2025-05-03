@@ -20,6 +20,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import de.schinke.steffen.ui.interfaces.AppRoute
+import de.schinke.steffen.ui.interfaces.AppScreenContent
+import de.schinke.steffen.ui.interfaces.AppTabRoute
 
 
 @Composable
@@ -54,7 +57,7 @@ fun AppNavigator(
         },
         bottomBar = {
 
-            if( activeScreen is AppTabRoute )  {
+            if( activeScreen is AppTabRoute)  {
 
                     NavigationBar {
 
