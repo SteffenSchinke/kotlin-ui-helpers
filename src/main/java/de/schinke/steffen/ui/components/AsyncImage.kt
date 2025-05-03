@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import kotlin.Int
 
 
 @Composable

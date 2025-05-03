@@ -52,4 +52,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
+    implementation(libs.coil.gif)
 }
