@@ -158,7 +158,7 @@ object DetailRoute: AppRoute, AppScreenContent {
 ## Author
 
 **Steffen Schinke**  
-📧 steffen.schinke.dev@gmail.com  
+📧 steffen.schinke@gmail.com  
 🔗 [GitHub](https://github.com/SteffenSchinke)
 
 ### Skills
