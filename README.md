@@ -1,5 +1,5 @@
 
-# Kotlin UI Helper
+# Kotlin UI Helper (Eng)
 
 A lightweight UI helper module for Android projects using **Jetpack Compose**.
 
@@ -169,3 +169,182 @@ object DetailRoute: AppRoute, AppScreenContent {
 
 - **Databases**:  
   MySQL, Oracle, SQL Server
+
+
+---
+---
+
+# Kotlin UI Helper (De)
+
+Ein leichtgewichtiges UI-Hilfsmodul für Android-Projekte mit **Jetpack Compose**.
+
+Dieses Modul stellt grundlegende Strukturen zur Verfügung, um **Navigation**, **App-Start** und **modulare Bildschirmgestaltung** in Compose-Projekten effizient zu organisieren.
+
+---
+
+## Features
+
+- **AppLauncher** – Initiale Ladeanzeige & Steuerung des Startvorgangs
+- **AppNavigator** – Navigation mit Unterstützung für Screens, Sheets & Tabs
+- **AppRoute / AppTabRoute / AppScreenContent** – Interfaces für eine modulare UI-Architektur
+- Fokus auf **Wiederverwendbarkeit**, **Saubere Struktur** und **Skalierbarkeit**
+
+---
+
+## Installation
+
+### 1. Als Git-Submodul hinzufügen
+
+bash
+git submodule add https://github.com/SteffenSchinke/kotlin-ui-helper.git
+
+
+Oder direkt klonen:
+bash
+git clone https://github.com/SteffenSchinke/kotlin-ui-helper.git
+
+
+### 2. In dein Projekt einbinden
+
+In deiner build.gradle.kts des Hauptprojekts:
+bash
+dependencies {
+    implementation(project(":kotlin-ui-helper"))
+}
+
+
+In deiner settings.gradle.kts:
+bash
+include(":kotlin-ui-helper")
+
+
+## Architekturübersicht
+
+AppRoute
+Basisinterface für alle Bildschirmrouten.
+bash
+interface AppRoute {
+    val route: String
+    val arguments: List<NamedNavArgument> get() = emptyList()
+}
+
+
+AppTabRoute
+Erweiterung von AppRoute für Tab-Navigation.
+bash
+interface AppTabRoute : AppRoute {
+    val title: String
+    val icon: ImageVector
+}
+
+
+AppScreenContent
+Erweiterung um irgend einen vorhergehenden Routen Types in der UI zur Anzeige zu bringen.
+bash
+interface AppScreenContent {
+
+    @Composable
+    fun Content(innerPadding: PaddingValues, navController: NavHostController): @Composable () -> Unit
+
+    @Composable
+    fun TopBar(navController: NavHostController): (@Composable () -> Unit)? = null
+
+    @Composable
+    fun SnackBar(): (@Composable () -> Unit)? = null
+
+    @Composable
+    fun Fab(navController: NavHostController): (@Composable () -> Unit)? = null
+}
+
+
+##Architekturprinzip
+
+Kombinierte Implementierung mit Tab Navigation:
+bash
+object HomeRoute: AppTabRoute, AppScreenContent {
+
+    override val title: String = "Home"
+    override val icon: ImageVector = Icons.Default.Home
+    override val route = "home"
+
+    @Composable
+    override fun Content(
+        padding: PaddingValues,
+        navController: NavHostController) {
+
+           Column {
+               Text("Mein Home Content")
+
+               Button(onClick = { navController.navigate(DetailRoute.route) }) {
+                   Text("Einzelheiten")
+               }
+           }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    override fun TopBar(navController: NavHostController): @Composable (() -> Unit)? {
+
+        return {
+            TopAppBar(
+                title = {
+                    Text("Mein Home")
+                }
+            )
+        }
+    }
+}
+
+
+Kombinierte Implementierung als Sub Composable ohne Tab Navigation:
+
+bash
+object DetailRoute: AppRoute, AppScreenContent {
+
+    override val route = "detail"
+
+    @Composable
+    override fun Content(
+        padding: PaddingValues,
+        navController: NavHostController) {
+
+        Text("Meine Einzelheiten!")
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    override fun TopBar(navController: NavHostController): @Composable () -> Unit {
+
+        return {
+
+            TopAppBar(
+                title = {
+                    Text("Mein Einstellungen")
+                },
+                navigationIcon = {
+
+                    BackButton(navController)
+                }
+            )
+        }
+    }
+}
+
+
+## Autor
+
+**Steffen Schinke**  
+📧 steffen.schinke.dev@gmail.com  
+🔗 [GitHub](https://github.com/SteffenSchinke)
+
+### Skills
+
+- **Sprachen & Frameworks**:  
+  C++, C#, VB.NET, Swift 6.0, Kotlin 2.0  
+  HTML, CSS, JavaScript, PHP
+
+- **Datenbanken**:  
+  MySQL, Oracle, SQL Server
+
+
+
