@@ -21,12 +21,12 @@ This module provides basic structures to efficiently organize **navigation**, **
 ### 1. Add as a Git submodule
 
 ```bash
-git submodule add https://github.com/SteffenSchinke/kotlin-ui-helper.git
+git submodule add https://github.com/SteffenSchinke/kotlin-ui-helpers.git
 ```
 
 Or clone directly:
 ```bash
-git clone https://github.com/SteffenSchinke/kotlin-ui-helper.git
+git clone https://github.com/SteffenSchinke/kotlin-ui-helpers.git
 ```
 
 ### 2. Integrate into your project
@@ -34,13 +34,13 @@ git clone https://github.com/SteffenSchinke/kotlin-ui-helper.git
 In your root project's `build.gradle.kts`:
 ```bash
 dependencies {
-    implementation(project(":kotlin-ui-helper"))
+    implementation(project(":kotlin-ui-helpers"))
 }
 ```
 
 In your `settings.gradle.kts`:
 ```bash
-include(":kotlin-ui-helper")
+include(":kotlin-ui-helpers")
 ```
 
 ## Architecture Overview
@@ -195,52 +195,52 @@ Dieses Modul stellt grundlegende Strukturen zur Verfügung, um **Navigation**, *
 
 ### 1. Als Git-Submodul hinzufügen
 
-bash
-git submodule add https://github.com/SteffenSchinke/kotlin-ui-helper.git
-
+```bash
+git submodule add https://github.com/SteffenSchinke/kotlin-ui-helpers.git
+```
 
 Oder direkt klonen:
-bash
-git clone https://github.com/SteffenSchinke/kotlin-ui-helper.git
-
+```bash
+git clone https://github.com/SteffenSchinke/kotlin-ui-helpers.git
+```
 
 ### 2. In dein Projekt einbinden
 
 In deiner build.gradle.kts des Hauptprojekts:
-bash
+```bash
 dependencies {
-    implementation(project(":kotlin-ui-helper"))
+    implementation(project(":kotlin-ui-helpers"))
 }
-
+```
 
 In deiner settings.gradle.kts:
-bash
-include(":kotlin-ui-helper")
-
+```bash
+include(":kotlin-ui-helpers")
+```
 
 ## Architekturübersicht
 
 AppRoute
 Basisinterface für alle Bildschirmrouten.
-bash
+```bash
 interface AppRoute {
     val route: String
     val arguments: List<NamedNavArgument> get() = emptyList()
 }
-
+```
 
 AppTabRoute
 Erweiterung von AppRoute für Tab-Navigation.
-bash
+```bash
 interface AppTabRoute : AppRoute {
     val title: String
     val icon: ImageVector
 }
-
+```
 
 AppScreenContent
 Erweiterung um irgend einen vorhergehenden Routen Types in der UI zur Anzeige zu bringen.
-bash
+```bash
 interface AppScreenContent {
 
     @Composable
@@ -255,12 +255,12 @@ interface AppScreenContent {
     @Composable
     fun Fab(navController: NavHostController): (@Composable () -> Unit)? = null
 }
-
+```
 
 ##Architekturprinzip
 
 Kombinierte Implementierung mit Tab Navigation:
-bash
+```bash
 object HomeRoute: AppTabRoute, AppScreenContent {
 
     override val title: String = "Home"
@@ -294,11 +294,11 @@ object HomeRoute: AppTabRoute, AppScreenContent {
         }
     }
 }
-
+```
 
 Kombinierte Implementierung als Sub Composable ohne Tab Navigation:
 
-bash
+```bash
 object DetailRoute: AppRoute, AppScreenContent {
 
     override val route = "detail"
@@ -329,7 +329,7 @@ object DetailRoute: AppRoute, AppScreenContent {
         }
     }
 }
-
+```
 
 ## Autor
 
