@@ -38,7 +38,7 @@ android {
 publishing {
     publications {
         create<MavenPublication>("release") {
-            groupId = "de.schinke.steffen"
+            groupId = "de.schinke.steffen.ui"
             artifactId = "kotlin-ui-helpers"
             version = "1.0.0"
 
