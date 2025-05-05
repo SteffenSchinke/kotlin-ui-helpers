@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android") version "2.0.21"
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.21"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.0.21"
+    id("maven-publish")
 }
 
 android {
@@ -37,6 +38,22 @@ android {
 //        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
 //    }
 
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("release") {
+            groupId = "de.schinke.steffen" // Ersetzen Sie dies durch die Gruppen-ID Ihrer Organisation/Ihres Projekts
+            artifactId = "kotlin-ui-helpers" // Dies ist der Name Ihres Moduls
+            version = "1.0.0" // Dies ist Ihre erste Versionsnummer
+
+            // Fügen Sie die zu veröffentlichenden Komponenten hinzu
+            // Für Android-Bibliotheken ist dies normalerweise die "release" Komponente
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
+    }
 }
 
 dependencies {
