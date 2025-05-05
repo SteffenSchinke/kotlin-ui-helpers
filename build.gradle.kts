@@ -33,22 +33,15 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-
-//    composeOptions {
-//        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-//    }
-
 }
 
 publishing {
     publications {
         create<MavenPublication>("release") {
-            groupId = "de.schinke.steffen" // Ersetzen Sie dies durch die Gruppen-ID Ihrer Organisation/Ihres Projekts
-            artifactId = "kotlin-ui-helpers" // Dies ist der Name Ihres Moduls
-            version = "1.0.0" // Dies ist Ihre erste Versionsnummer
+            groupId = "de.schinke.steffen"
+            artifactId = "kotlin-ui-helpers"
+            version = "1.0.0"
 
-            // Fügen Sie die zu veröffentlichenden Komponenten hinzu
-            // Für Android-Bibliotheken ist dies normalerweise die "release" Komponente
             afterEvaluate {
                 from(components["release"])
             }
