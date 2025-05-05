@@ -32,22 +32,16 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
-    }
 }
 
 
 dependencies {
 
-    implementation(platform("androidx.compose:compose-bom:2024.04.00"))
-    implementation("androidx.compose.material:material-icons-extended")
-    implementation("androidx.compose.material:material")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.navigation:navigation-compose")
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.material.icons.extended)
+    implementation(libs.androidx.material)
+    implementation(libs.material3)
+    implementation(libs.navigation.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
