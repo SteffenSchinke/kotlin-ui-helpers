@@ -45,15 +45,15 @@ fun AppNavigator(
         modifier = Modifier.fillMaxSize(),
         topBar = {
 
-            activeScreen.TopBar(navController)?.invoke()
+            activeScreen.TopBar(navController)
         },
         snackbarHost = {
 
-            activeScreen.SnackBar()?.invoke()
+            activeScreen.SnackBar()
         },
         floatingActionButton = {
 
-            activeScreen.Fab(navController)?.invoke()
+            activeScreen.Fab(navController)
         },
         bottomBar = {
 

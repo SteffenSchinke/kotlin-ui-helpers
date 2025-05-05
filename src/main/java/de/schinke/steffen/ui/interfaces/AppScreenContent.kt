@@ -11,11 +11,11 @@ interface AppScreenContent {
                 navController: NavHostController)
 
     @Composable
-    fun TopBar(navController: NavHostController): (@Composable () -> Unit)? = null
+    fun TopBar(navController: NavHostController) = Unit
 
     @Composable
-    fun SnackBar(): (@Composable () -> Unit)? = null
+    fun SnackBar() = Unit
 
     @Composable
-    fun Fab(navController: NavHostController): (@Composable () -> Unit)? = null
+    fun Fab(navController: NavHostController) = Unit
 }
