@@ -22,6 +22,8 @@ This module provides basic structures to efficiently organize **navigation**, **
 
 ```bash
 git submodule add https://github.com/SteffenSchinke/kotlin-ui-helpers.git
+git submodule init
+git submodule update
 ```
 
 Or clone directly:
@@ -197,6 +199,8 @@ Dieses Modul stellt grundlegende Strukturen zur Verfügung, um **Navigation**, *
 
 ```bash
 git submodule add https://github.com/SteffenSchinke/kotlin-ui-helpers.git
+git submodule init
+git submodule update
 ```
 
 Oder direkt klonen:
