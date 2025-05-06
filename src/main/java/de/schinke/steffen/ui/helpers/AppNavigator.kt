@@ -1,7 +1,6 @@
 package de.schinke.steffen.ui.helpers
 
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -91,7 +89,6 @@ fun AppNavigator(
                         .padding(innerPadding)
                         .padding(horizontal = 16.dp)
                         .fillMaxSize()
-                        .border(width = 1.dp, color = Color.Red)
                 ) {
 
                     NavHost(
@@ -106,7 +103,7 @@ fun AppNavigator(
 
                                 (screen as AppScreenContent).apply {
 
-                                    Content(innerPadding, navController)
+                                    Content(navController)
                                 }
                             }
                         }
