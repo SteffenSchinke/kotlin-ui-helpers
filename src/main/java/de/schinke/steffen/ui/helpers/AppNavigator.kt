@@ -11,13 +11,14 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -28,9 +29,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import de.schinke.steffen.interfaces.AppRoute
 import de.schinke.steffen.interfaces.AppScreenContent
-import de.schinke.steffen.services.AppSnackbar
 import de.schinke.steffen.interfaces.AppTabRoute
-import androidx.compose.material3.SnackbarResult
+import de.schinke.steffen.services.AppSnackbar
 
 
 @Composable
@@ -48,7 +48,7 @@ fun AppNavigator(
     val activeScreen: AppScreenContent = allRoutes.find {
         it.route == currentRoute && it is AppScreenContent
     } as? AppScreenContent ?: startScreen
-
+    val actionOnNewLine by AppSnackbar.actionOnNewLine.collectAsState()
 
     LaunchedEffect(Unit) {
 
@@ -82,10 +82,13 @@ fun AppNavigator(
 
                     Snackbar(
                         snackbarData = snackbarData,
-                        actionOnNewLine = true,
                         shape = RoundedCornerShape(8.dp),
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        actionOnNewLine = actionOnNewLine,
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        actionColor = MaterialTheme.colorScheme.primary,
+                        actionContentColor = MaterialTheme.colorScheme.onPrimary,
+                        dismissActionContentColor = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             )
@@ -153,4 +156,3 @@ fun AppNavigator(
             }
     )
 }
-
