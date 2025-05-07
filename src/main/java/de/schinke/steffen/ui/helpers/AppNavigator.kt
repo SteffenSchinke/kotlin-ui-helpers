@@ -4,10 +4,13 @@ package de.schinke.steffen.ui.helpers
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -73,7 +76,19 @@ fun AppNavigator(
         },
         snackbarHost = {
 
-            SnackbarHost(hostState = snackbarHostState)
+            SnackbarHost(
+                hostState = snackbarHostState,
+                snackbar = { snackbarData ->
+
+                    Snackbar(
+                        snackbarData = snackbarData,
+                        actionOnNewLine = true,
+                        shape = RoundedCornerShape(8.dp),
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            )
         },
         floatingActionButton = {
 
