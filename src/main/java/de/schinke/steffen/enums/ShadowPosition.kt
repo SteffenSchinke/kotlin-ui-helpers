@@ -1,4 +1,4 @@
-package de.schinke.steffen.ui.enums
+package de.schinke.steffen.enums
 
 enum class ShadowPosition {
     TOP,

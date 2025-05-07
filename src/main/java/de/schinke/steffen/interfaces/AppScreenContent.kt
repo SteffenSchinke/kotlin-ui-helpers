@@ -1,4 +1,4 @@
-package de.schinke.steffen.ui.interfaces
+package de.schinke.steffen.interfaces
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
