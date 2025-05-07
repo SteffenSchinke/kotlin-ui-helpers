@@ -29,15 +29,12 @@ fun ShadowCard(
     modifier: Modifier = Modifier,
     elevation: Dp = 4.dp,
     shadowPositions: Set<ShadowPosition> = setOf(ShadowPosition.ALL),
-    shadowColorDark: Color = Color.White,
-    shadowColorLight: Color = Color.Black,
-    backgroundColor: Color = MaterialTheme.colorScheme.surface,
-    borderColor: Color = MaterialTheme.colorScheme.outline,
+    shadowColor: Color = Color.Black.copy(0.95f),
+    backgroundColor: Color = Color.Unspecified,
+    borderColor: Color = Color.Unspecified,
     shape: Shape = RoundedCornerShape(12.dp),
     content: @Composable () -> Unit
 ) {
-
-    val isDarkMode = isSystemInDarkTheme()
 
     Box(
 
@@ -47,8 +44,8 @@ fun ShadowCard(
             .shadow(
                 elevation = elevation,
                 shape = shape,
-                ambientColor = if(isDarkMode) shadowColorDark else shadowColorLight,
-                spotColor = if(isDarkMode) shadowColorDark else shadowColorLight,
+                ambientColor = shadowColor,
+                spotColor = shadowColor,
                 clip = false
             )
     ) {
@@ -65,9 +62,9 @@ fun ShadowCard(
                         shadowPositions.contains(ShadowPosition.ALL)) elevation else 0.dp,
                     end = if (shadowPositions.contains(ShadowPosition.RIGHT) ||
                         shadowPositions.contains(ShadowPosition.ALL)) elevation else 0.dp
-                )
-                .border(0.5.dp, borderColor, shape),
+                ),
             shape = shape,
+            border = BorderStroke(0.5.dp, borderColor),
             colors = CardDefaults.cardColors(
                 containerColor = backgroundColor
             )
