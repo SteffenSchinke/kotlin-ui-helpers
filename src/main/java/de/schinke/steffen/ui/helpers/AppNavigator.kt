@@ -1,7 +1,6 @@
 package de.schinke.steffen.ui.helpers
 
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
@@ -30,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -60,6 +60,7 @@ fun AppNavigator(
     } as? AppScreenContent ?: startScreen
     val snackbarHostState = remember { SnackbarHostState() }
     var snackbarHeight by remember { mutableStateOf(0.dp) }
+    var fabHeight by remember { mutableStateOf(0.dp) }
     val isSnackbarVisible = snackbarHostState.currentSnackbarData != null
     val density = LocalDensity.current
     val fabBottomOffset by animateDpAsState(
@@ -96,13 +97,11 @@ fun AppNavigator(
                         hostState = snackbarHostState,
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
-                            .offset(y = if (navActiveScreen.fab != null) {
-                                            Log.d("AppNavigator", "snackbarHeight: $snackbarHeight")
-                                            snackbarHeight + 72.dp /* fb height */
-                                        } else {
-                                            0.dp
-                                        }
-                            ),
+                            .offset(y =
+                                if (navActiveScreen.fab != null)
+                                    snackbarHeight + fabHeight
+                                else
+                                    0.dp),
                         snackbar = {
                             CustomSnackbar(
                                 modifier = Modifier
@@ -110,7 +109,8 @@ fun AppNavigator(
                                         snackbarHeight = with(density) { size.height.toDp() }
                                     },
                                 snackbarMessage = message,
-                                snackbarHostState = snackbarHostState)
+                                snackbarHostState = snackbarHostState
+                            )
                         }
                     )
                 }
@@ -125,9 +125,12 @@ fun AppNavigator(
                 exit = fabExitAnimation
             ) {
 
-                Box(modifier = Modifier.padding(bottom = fabBottomOffset)) {
+                Box(modifier = Modifier
+                    .padding(bottom = fabBottomOffset)
+                    .onPlaced{ layout ->
+                        fabHeight = with(density) { layout.size.height.toDp() + 12.dp /* padding fab */ }
+                    }) {
 
-                    Log.d("AppNavigator", "fabBottomOffset: $fabBottomOffset")
                     navActiveScreen.fab?.invoke(navController)
                 }
             }

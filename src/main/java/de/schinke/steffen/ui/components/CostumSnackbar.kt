@@ -20,11 +20,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import de.schinke.steffen.enums.SnackbarMode
 import de.schinke.steffen.models.AppSnackbarMessage
+import de.schinke.steffen.ui.R
 
 @Composable
 fun CustomSnackbar(
@@ -78,16 +80,35 @@ private fun CustomSnackbarMessages(snackbarMessage: AppSnackbarMessage) {
         modifier = Modifier.padding(start = 12.dp, top = 12.dp)
     ) {
 
-        Text(
-            text = snackbarMessage.mode.title,
-            fontSize = MaterialTheme.typography.titleLarge.fontSize,
-            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold),
-            modifier = Modifier.padding(bottom = 16.dp),
-            color = if (snackbarMessage.mode == SnackbarMode.ERROR)
-                MaterialTheme.colorScheme.error
-            else
-                MaterialTheme.colorScheme.primary
-        )
+        Row {
+
+            Icon(
+                painterResource(
+                    when(snackbarMessage.mode) {
+                        SnackbarMode.ERROR  -> R.drawable.ic_error_outline
+                        SnackbarMode.INFO   -> R.drawable.ic_info_outline
+                        SnackbarMode.TIP    -> R.drawable.ic_tip_outline
+                    }
+                ),
+                "Icon",
+                modifier = Modifier.padding(end = 16.dp),
+                tint = if (snackbarMessage.mode == SnackbarMode.ERROR)
+                    MaterialTheme.colorScheme.error
+                else
+                    MaterialTheme.colorScheme.primary
+            )
+
+            Text(
+                text = snackbarMessage.mode.title,
+                fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold),
+                modifier = Modifier.padding(bottom = 16.dp),
+                color = if (snackbarMessage.mode == SnackbarMode.ERROR)
+                    MaterialTheme.colorScheme.error
+                else
+                    MaterialTheme.colorScheme.primary
+            )
+        }
 
         Text(
             text = snackbarMessage.message,

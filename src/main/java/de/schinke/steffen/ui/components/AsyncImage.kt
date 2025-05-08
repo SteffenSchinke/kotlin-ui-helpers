@@ -33,7 +33,8 @@ fun AsyncImage(
     url: String,
     size: Dp = 80.dp,
     roundedCorners: Dp = 12.dp,
-    bgColor: Color = Color.White
+    bgColor: Color = Color.White,
+    borderColor: Color = Color.Unspecified
 ) {
 
     val imageSize = (size.value * LocalDensity.current.density).toInt()
@@ -53,7 +54,7 @@ fun AsyncImage(
             .background(bgColor)
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.primary,
+                color = borderColor,
                 shape = RoundedCornerShape(roundedCorners)
 
             )
