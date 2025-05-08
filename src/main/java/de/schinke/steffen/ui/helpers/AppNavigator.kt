@@ -64,15 +64,11 @@ fun AppNavigator(
     val activeScreen: AppScreenContent = allRoutes.find {
         it.route == currentRoute && it is AppScreenContent
     } as? AppScreenContent ?: startScreen
-//    val fabBottomOffset by animateDpAsState(
-//        targetValue = if (snackbarVisible) 80.dp else 16.dp,
-//        label = "FAB Offset Animation"
-//    )
     val fabBottomOffset by animateDpAsState(
         targetValue = if (snackbarVisible) snackbarHeight  else 16.dp,
         label = "FAB Offset Animation"
     )
-   val fabEnterAnimation = remember {
+    val fabEnterAnimation = remember {
         fadeIn() + slideInVertically(initialOffsetY = { it / 2 })
     }
     val fabExitAnimation = remember {
@@ -109,8 +105,8 @@ fun AppNavigator(
         snackbarHost = {
 
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
+
+                modifier = Modifier.fillMaxSize()
             ) {
 
                 SnackbarHost(
@@ -122,7 +118,6 @@ fun AppNavigator(
                                     else
                                         0.dp),
                     snackbar = { snackbarData ->
-
                         Snackbar(
                             modifier = Modifier
                                 .onSizeChanged { size ->
