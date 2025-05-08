@@ -8,12 +8,9 @@ interface AppScreenContent {
 
     val viewModel: AppBaseViewModel<ViewModelState>
 
-    @Composable
-    fun Content(navController: NavHostController)
+    val content: @Composable (navController: NavHostController) -> Unit
 
-    @Composable
-    fun TopBar(navController: NavHostController): Unit? = null
+    val tabBar: (@Composable (navController: NavHostController) -> Unit)?
 
-    @Composable
-    fun Fab(navController: NavHostController): Unit? = null
+    val fab: (@Composable (navController: NavHostController) -> Unit)?
 }

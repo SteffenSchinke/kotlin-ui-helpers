@@ -29,6 +29,7 @@ import de.schinke.steffen.models.AppSnackbarMessage
 @Composable
 fun CustomSnackbar(
 
+    modifier: Modifier = Modifier,
     snackbarMessage: AppSnackbarMessage,
     snackbarHostState: SnackbarHostState
 ) {
@@ -39,7 +40,7 @@ fun CustomSnackbar(
         tonalElevation = 6.dp,
         color = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface,
-        modifier = Modifier
+        modifier = modifier
             .padding(8.dp)
             .padding(bottom = 8.dp)
             .fillMaxWidth()

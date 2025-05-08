@@ -1,8 +1,17 @@
 package de.schinke.steffen.ui.helpers
 
 
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -16,8 +25,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -45,6 +59,19 @@ fun AppNavigator(
         it.route == navCurrentRoute && it is AppScreenContent
     } as? AppScreenContent ?: startScreen
     val snackbarHostState = remember { SnackbarHostState() }
+    var snackbarHeight by remember { mutableStateOf(0.dp) }
+    val isSnackbarVisible = snackbarHostState.currentSnackbarData != null
+    val density = LocalDensity.current
+    val fabBottomOffset by animateDpAsState(
+        targetValue = if (isSnackbarVisible) snackbarHeight else 0.dp,
+        label = "FAB Offset Animation"
+    )
+    val fabEnterAnimation = remember {
+        fadeIn() + slideInVertically(initialOffsetY = { it / 2 })
+    }
+    val fabExitAnimation = remember {
+        fadeOut() + slideOutVertically(targetOffsetY = { it / 2 })
+    }
 
     LaunchedEffect(Unit) {
 
@@ -56,24 +83,54 @@ fun AppNavigator(
         modifier = Modifier.fillMaxSize(),
         topBar = {
 
-            navActiveScreen.TopBar(navController)
+            navActiveScreen.tabBar?.invoke(navController)
         },
         snackbarHost = {
 
             AppSnackbar.snackbarMessage.collectAsState().value?.let { message ->
 
-                SnackbarHost(
-                    hostState = snackbarHostState,
-                    snackbar = {
+                Box(modifier = Modifier.fillMaxSize()) {
 
-                        CustomSnackbar(message, snackbarHostState)
-                    }
-                )
+                    SnackbarHost(
+
+                        hostState = snackbarHostState,
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .offset(y = if (navActiveScreen.fab != null) {
+                                            Log.d("AppNavigator", "snackbarHeight: $snackbarHeight")
+                                            snackbarHeight + 72.dp /* fb height */
+                                        } else {
+                                            0.dp
+                                        }
+                            ),
+                        snackbar = {
+                            CustomSnackbar(
+                                modifier = Modifier
+                                    .onSizeChanged { size ->
+                                        snackbarHeight = with(density) { size.height.toDp() }
+                                    },
+                                snackbarMessage = message,
+                                snackbarHostState = snackbarHostState)
+                        }
+                    )
+                }
             }
         },
         floatingActionButton = {
 
-            navActiveScreen.Fab(navController)
+            AnimatedVisibility(
+
+                visible = true,
+                enter = fabEnterAnimation,
+                exit = fabExitAnimation
+            ) {
+
+                Box(modifier = Modifier.padding(bottom = fabBottomOffset)) {
+
+                    Log.d("AppNavigator", "fabBottomOffset: $fabBottomOffset")
+                    navActiveScreen.fab?.invoke(navController)
+                }
+            }
         },
         bottomBar = {
 
@@ -125,7 +182,7 @@ fun AppNavigator(
 
                                 (screen as AppScreenContent).apply {
 
-                                    Content(navController)
+                                    content(navController)
                                 }
                             }
                         }
