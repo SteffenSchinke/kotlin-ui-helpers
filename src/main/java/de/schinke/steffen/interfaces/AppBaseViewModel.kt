@@ -2,6 +2,9 @@ package de.schinke.steffen.interfaces
 
 import android.util.Log
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.schinke.steffen.models.AppSnackbarMessage
@@ -32,10 +35,13 @@ abstract class AppBaseViewModel<S>(initialState: S): ViewModel() {
 
         viewModelScope.launch {
 
-            AppSnackbar.send(
+            AppSnackbar.sendToSnackbar(
                 AppSnackbarMessage(
-                    message =
-                        if (errorMessage.isEmpty()) {
+                    message = buildAnnotatedString {
+                        pushStyle(SpanStyle(fontWeight = FontWeight.ExtraBold))
+                        append("Error\n")
+                        pop()
+                        append( if (errorMessage.isEmpty()) {
                             "Leider ist ein Fehler aufgetreten!"
                         } else {
                             if (errorCode.isEmpty()) {
@@ -43,7 +49,8 @@ abstract class AppBaseViewModel<S>(initialState: S): ViewModel() {
                             } else {
                                 "Leider ist ein Fehler aufgetreten!\nBeschreibung: $errorMessage\nCode: $errorCode"
                             }
-                        },
+                        })
+                    }.toString(),
                     actionOnNewLine = true,
                     actionLabel = actionLabel,
                     onAction = actionAction,
@@ -63,9 +70,14 @@ abstract class AppBaseViewModel<S>(initialState: S): ViewModel() {
 
         viewModelScope.launch {
 
-            AppSnackbar.send(
+            AppSnackbar.sendToSnackbar(
                 AppSnackbarMessage(
-                    message = message,
+                    message = buildAnnotatedString {
+                        pushStyle(SpanStyle(fontWeight = FontWeight.ExtraBold))
+                        append("Hinweis\n")
+                        pop()
+                        append(message)
+                    }.toString(),
                     actionOnNewLine = true,
                     duration = SnackbarDuration.Short,
                     isErrorMessage = false

@@ -1,24 +1,28 @@
 package de.schinke.steffen.services
 
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import de.schinke.steffen.models.AppSnackbarMessage
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 object AppSnackbar {
 
-    private val _events = MutableSharedFlow<AppSnackbarMessage>()
-    val events: SharedFlow<AppSnackbarMessage> = _events.asSharedFlow()
+    private var snackbarHostState: SnackbarHostState? = null
 
-    private val _actionOnNewLine = MutableStateFlow<Boolean>(false)
-    val actionOnNewLine = _actionOnNewLine.asStateFlow()
+    fun setHost(hostState: SnackbarHostState) {
+        snackbarHostState = hostState
+    }
 
-
-    suspend fun send(message: AppSnackbarMessage) {
-
-        _actionOnNewLine.value = message.actionOnNewLine
-        _events.emit(message)
+    suspend fun sendToSnackbar(message: AppSnackbarMessage) {
+        snackbarHostState?.let { state ->
+            val result = state.showSnackbar(
+                message = message.message,
+                actionLabel = message.actionLabel,
+                withDismissAction = message.withDismissAction,
+                duration = message.duration
+            )
+            if (result == SnackbarResult.ActionPerformed) {
+                message.onAction?.invoke()
+            }
+        }
     }
 }
