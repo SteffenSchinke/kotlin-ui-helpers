@@ -2,7 +2,9 @@ package de.schinke.steffen.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -22,10 +24,19 @@ fun DefaultLaunch(
 
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        CircularProgressIndicator(modifier = Modifier.size(24.dp))
-        Text(title, style = MaterialTheme.typography.bodyMedium)
+        CircularProgressIndicator(
+            modifier = Modifier.size(40.dp)
+        )
+
+        Spacer(Modifier.height(20.dp))
+
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }

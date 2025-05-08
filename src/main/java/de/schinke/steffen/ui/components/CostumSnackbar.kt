@@ -55,15 +55,7 @@ fun CustomSnackbar(
             if  (snackbarMessage.actionOnNewLine) {
 
                 CustomSnackbarMessages(snackbarMessage)
-                Row(
-
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-
-                    CustomSnackbarButtons(snackbarMessage, snackbarHostState)
-                }
+                CustomSnackbarButtons(snackbarMessage, snackbarHostState)
             } else {
 
                 Row {
@@ -81,13 +73,15 @@ fun CustomSnackbar(
 @Composable
 private fun CustomSnackbarMessages(snackbarMessage: AppSnackbarMessage) {
 
-    Column {
+    Column(
+        modifier = Modifier.padding(start = 12.dp, top = 12.dp)
+    ) {
 
         Text(
             text = snackbarMessage.mode.title,
             fontSize = MaterialTheme.typography.titleLarge.fontSize,
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold),
-            modifier = Modifier.padding(bottom = 8.dp),
+            modifier = Modifier.padding(bottom = 16.dp),
             color = if (snackbarMessage.mode == SnackbarMode.ERROR)
                 MaterialTheme.colorScheme.error
             else
@@ -98,13 +92,13 @@ private fun CustomSnackbarMessages(snackbarMessage: AppSnackbarMessage) {
             text = snackbarMessage.message,
             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 12.dp)
         )
 
         snackbarMessage.messageCode?.let {
             Text(
                 text = it,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 12.dp)
             )
         }
     }
@@ -117,7 +111,12 @@ private fun CustomSnackbarButtons(
     snackbarHostState: SnackbarHostState
 ) {
 
-    Row {
+    Row(
+
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End
+    ) {
 
         snackbarMessage.actionLabel?.let { title ->
             snackbarMessage.onAction?.let { onAction ->
