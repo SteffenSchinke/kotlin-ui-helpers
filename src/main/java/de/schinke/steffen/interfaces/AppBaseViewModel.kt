@@ -2,9 +2,6 @@ package de.schinke.steffen.interfaces
 
 import android.util.Log
 import androidx.compose.material3.SnackbarDuration
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.schinke.steffen.enums.SnackbarMode
