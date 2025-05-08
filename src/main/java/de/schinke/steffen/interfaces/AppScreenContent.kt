@@ -15,5 +15,5 @@ interface AppScreenContent {
     fun TopBar(navController: NavHostController) = Unit
 
     @Composable
-    fun Fab(navController: NavHostController) = Unit
+    fun Fab(navController: NavHostController): Unit? = null
 }

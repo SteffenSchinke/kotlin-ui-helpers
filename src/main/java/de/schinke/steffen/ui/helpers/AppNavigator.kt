@@ -28,9 +28,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -55,12 +59,17 @@ fun AppNavigator(
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStack?.destination?.route ?: "No Route"
     val actionOnNewLine by AppSnackbar.actionOnNewLine.collectAsState()
+    var snackbarHeight by remember { mutableStateOf(0.dp) }
     val snackbarVisible = snackbarHostState.currentSnackbarData != null
     val activeScreen: AppScreenContent = allRoutes.find {
         it.route == currentRoute && it is AppScreenContent
     } as? AppScreenContent ?: startScreen
+//    val fabBottomOffset by animateDpAsState(
+//        targetValue = if (snackbarVisible) 80.dp else 16.dp,
+//        label = "FAB Offset Animation"
+//    )
     val fabBottomOffset by animateDpAsState(
-        targetValue = if (snackbarVisible) 80.dp else 16.dp,
+        targetValue = if (snackbarVisible) snackbarHeight  else 16.dp,
         label = "FAB Offset Animation"
     )
    val fabEnterAnimation = remember {
@@ -69,6 +78,8 @@ fun AppNavigator(
     val fabExitAnimation = remember {
         fadeOut() + slideOutVertically(targetOffsetY = { it / 2 })
     }
+    val density = LocalDensity.current
+
 
     LaunchedEffect(Unit) {
 
@@ -86,6 +97,7 @@ fun AppNavigator(
             }
         }
     }
+
 
     Scaffold(
 
@@ -105,10 +117,20 @@ fun AppNavigator(
                     hostState = snackbarHostState,
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .offset(y = fabBottomOffset * 2),
+                        .offset(y = if (activeScreen.Fab(navController) != null)
+                                        snackbarHeight + 72.dp /* fb height */
+                                    else
+                                        0.dp),
                     snackbar = { snackbarData ->
 
                         Snackbar(
+                            modifier = Modifier
+                                .onSizeChanged { size ->
+
+                                    with(density) {
+                                        snackbarHeight = size.height.toDp()
+                                    }
+                                },
                             snackbarData = snackbarData,
                             shape = RoundedCornerShape(8.dp),
                             actionOnNewLine = actionOnNewLine,
@@ -124,15 +146,17 @@ fun AppNavigator(
         },
         floatingActionButton = {
 
-            AnimatedVisibility(
-                visible = true,
-                enter = fabEnterAnimation,
-                exit = fabExitAnimation
-            ) {
-                Box(
-                    modifier = Modifier.padding(bottom = fabBottomOffset, end = 16.dp)
+            if (activeScreen.Fab(navController) != null) {
+                AnimatedVisibility(
+                    visible = true,
+                    enter = fabEnterAnimation,
+                    exit = fabExitAnimation
                 ) {
-                    activeScreen.Fab(navController)
+                    Box(
+                        modifier = Modifier.padding(bottom = fabBottomOffset, end = 16.dp)
+                    ) {
+                        activeScreen.Fab(navController)
+                    }
                 }
             }
         },
