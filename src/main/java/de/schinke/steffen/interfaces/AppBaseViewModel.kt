@@ -1,5 +1,6 @@
 package de.schinke.steffen.interfaces
 
+import android.util.Log
 import androidx.compose.material3.SnackbarDuration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,29 +12,20 @@ import kotlinx.coroutines.launch
 
 abstract class AppBaseViewModel<S>(initialState: S): ViewModel() {
 
+    protected var errorCode: String = ""
+    protected var errorMessage: String = ""
+
+    protected val nameViewModel: String
+        get() = this::class.simpleName ?: "UnknownViewModel"
+
     private val _state = MutableStateFlow(initialState)
     val state = _state.asStateFlow()
-
-    private val _errorCode = MutableStateFlow("")
-    val errorCode = _errorCode.asStateFlow()
-
-    private val _errorMessage = MutableStateFlow("")
-    val errorMessage = _errorMessage.asStateFlow()
-
-
-    protected fun setErrorCode(newCode: String) {
-
-        _errorCode.value = newCode
-    }
-
-    protected fun setErrorMessage(newMessage: String) {
-
-        _errorMessage.value = newMessage
-    }
 
     protected fun setState(newState: (S) -> S) {
 
         _state.value = newState(_state.value)
+
+        Log.d(nameViewModel, "setState(${_state.value})")
     }
 
     protected fun sendSnackbarError(actionLabel: String? = null, actionAction: (() -> Unit)? = null) {
@@ -42,7 +34,16 @@ abstract class AppBaseViewModel<S>(initialState: S): ViewModel() {
 
             AppSnackbar.send(
                 AppSnackbarMessage(
-                    message = "Leider ist ein Fehler aufgetreten!\nBeschreibung: ${_errorMessage.value}\nCode: ${_errorCode.value}",
+                    message =
+                        if (errorMessage.isEmpty()) {
+                            "Leider ist ein Fehler aufgetreten!"
+                        } else {
+                            if (errorCode.isEmpty()) {
+                                "Leider ist ein Fehler aufgetreten!\nBeschreibung: $errorMessage"
+                            } else {
+                                "Leider ist ein Fehler aufgetreten!\nBeschreibung: $errorMessage\nCode: $errorCode"
+                            }
+                        },
                     actionOnNewLine = true,
                     actionLabel = actionLabel,
                     onAction = actionAction,
@@ -51,6 +52,11 @@ abstract class AppBaseViewModel<S>(initialState: S): ViewModel() {
                 )
             )
         }
+
+        errorMessage = ""
+        errorCode = ""
+
+        Log.d(nameViewModel, "sendSnackbarError(message: ${errorMessage}, code: ${errorCode})")
     }
 
     protected fun sendSnackbarInfo(message: String) {
@@ -66,5 +72,7 @@ abstract class AppBaseViewModel<S>(initialState: S): ViewModel() {
                 )
             )
         }
+
+        Log.d(nameViewModel, "sendSnackbarInfo($message)")
     }
 }
