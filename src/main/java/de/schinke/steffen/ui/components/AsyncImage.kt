@@ -69,11 +69,7 @@ fun AsyncImage(
             }
             is AsyncImagePainter.State.Success -> {
 
-                Image(
-                    painter = painter,
-                    contentDescription = "Cover",
-                    modifier = Modifier.fillMaxSize()
-                )
+
             }
             is AsyncImagePainter.State.Error-> {
 

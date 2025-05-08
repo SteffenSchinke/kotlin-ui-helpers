@@ -9,5 +9,6 @@ data class AppSnackbarMessage(
     val onAction: (() -> Unit)? = null,
     val actionOnNewLine: Boolean = false,
     val withDismissAction: Boolean = true,
-    val duration: SnackbarDuration = SnackbarDuration.Short
+    val duration: SnackbarDuration = SnackbarDuration.Short,
+    val isErrorMessage: Boolean = false
 )
