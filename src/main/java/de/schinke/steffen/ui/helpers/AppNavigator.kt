@@ -14,6 +14,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -26,6 +27,7 @@ import de.schinke.steffen.interfaces.AppRoute
 import de.schinke.steffen.interfaces.AppScreenContent
 import de.schinke.steffen.interfaces.AppTabRoute
 import de.schinke.steffen.services.AppSnackbar
+import de.schinke.steffen.ui.components.CustomSnackbar
 
 
 @Composable
@@ -44,12 +46,10 @@ fun AppNavigator(
     } as? AppScreenContent ?: startScreen
     val snackbarHostState = remember { SnackbarHostState() }
 
-
     LaunchedEffect(Unit) {
 
         AppSnackbar.setHost(snackbarHostState)
     }
-
 
     Scaffold(
 
@@ -60,7 +60,16 @@ fun AppNavigator(
         },
         snackbarHost = {
 
-            SnackbarHost(hostState = snackbarHostState)
+            AppSnackbar.snackbarMessage.collectAsState().value?.let { message ->
+
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                    snackbar = {
+
+                        CustomSnackbar(message, snackbarHostState)
+                    }
+                )
+            }
         },
         floatingActionButton = {
 

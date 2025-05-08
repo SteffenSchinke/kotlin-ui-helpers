@@ -7,6 +7,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.schinke.steffen.enums.SnackbarMode
 import de.schinke.steffen.models.AppSnackbarMessage
 import de.schinke.steffen.services.AppSnackbar
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,10 +16,7 @@ import kotlinx.coroutines.launch
 
 abstract class AppBaseViewModel<S>(initialState: S): ViewModel() {
 
-    protected var errorCode: String = ""
-    protected var errorMessage: String = ""
-
-    protected val nameViewModel: String
+     protected val nameViewModel: String
         get() = this::class.simpleName ?: "UnknownViewModel"
 
     private val _state = MutableStateFlow(initialState)
@@ -31,60 +29,32 @@ abstract class AppBaseViewModel<S>(initialState: S): ViewModel() {
         Log.d(nameViewModel, "setState(${_state.value})")
     }
 
-    protected fun sendSnackbarError(actionLabel: String? = null, actionAction: (() -> Unit)? = null) {
+    protected fun showMessageInSnackbar(
+        message: String,
+        mode: SnackbarMode = SnackbarMode.INFO,
+        messageCode: String? = null,
+        actionOnNewLine: Boolean = false,
+        actionLabel: String? = null,
+        actionAction: (() -> Unit)? = null,
+        withDismissAction: Boolean = true,
+        duration: SnackbarDuration = SnackbarDuration.Short) {
 
         viewModelScope.launch {
 
             AppSnackbar.sendToSnackbar(
                 AppSnackbarMessage(
-                    message = buildAnnotatedString {
-                        pushStyle(SpanStyle(fontWeight = FontWeight.ExtraBold))
-                        append("Error\n")
-                        pop()
-                        append( if (errorMessage.isEmpty()) {
-                            "Leider ist ein Fehler aufgetreten!"
-                        } else {
-                            if (errorCode.isEmpty()) {
-                                "Leider ist ein Fehler aufgetreten!\nBeschreibung: $errorMessage"
-                            } else {
-                                "Leider ist ein Fehler aufgetreten!\nBeschreibung: $errorMessage\nCode: $errorCode"
-                            }
-                        })
-                    }.toString(),
-                    actionOnNewLine = true,
+                    mode = mode,
+                    message = message,
+                    messageCode = messageCode,
+                    actionOnNewLine = actionOnNewLine,
                     actionLabel = actionLabel,
                     onAction = actionAction,
-                    duration = SnackbarDuration.Indefinite,
-                    isErrorMessage = true
+                    withDismissAction = withDismissAction,
+                    duration = duration
                 )
             )
         }
 
-        errorMessage = ""
-        errorCode = ""
-
-        Log.d(nameViewModel, "sendSnackbarError(message: ${errorMessage}, code: ${errorCode})")
-    }
-
-    protected fun sendSnackbarInfo(message: String) {
-
-        viewModelScope.launch {
-
-            AppSnackbar.sendToSnackbar(
-                AppSnackbarMessage(
-                    message = buildAnnotatedString {
-                        pushStyle(SpanStyle(fontWeight = FontWeight.ExtraBold))
-                        append("Hinweis\n")
-                        pop()
-                        append(message)
-                    }.toString(),
-                    actionOnNewLine = true,
-                    duration = SnackbarDuration.Short,
-                    isErrorMessage = false
-                )
-            )
-        }
-
-        Log.d(nameViewModel, "sendSnackbarInfo($message)")
+        Log.d(nameViewModel, "showMessageInSnackbar(message: ${message}, mode: ${mode}, messageCode: ${messageCode}, actionOnNewLine: ${actionOnNewLine}, actionLabel: ${actionLabel}, actionAction: ${mode.title})")
     }
 }
