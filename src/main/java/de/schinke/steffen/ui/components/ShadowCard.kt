@@ -2,6 +2,7 @@ package de.schinke.steffen.ui.components
 
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,9 +21,9 @@ import de.schinke.steffen.enums.ShadowPosition
 @Composable
 fun ShadowCard(
     modifier: Modifier = Modifier,
-    elevation: Dp = 4.dp,
+    elevation: Dp = 10.dp,
     shadowPositions: Set<ShadowPosition> = setOf(ShadowPosition.ALL),
-    shadowColor: Color = Color.Black.copy(0.95f),
+    shadowColor: Color = Color.Unspecified,
     backgroundColor: Color = Color.Unspecified,
     borderColor: Color = Color.Unspecified,
     shape: Shape = RoundedCornerShape(12.dp),
@@ -30,40 +31,40 @@ fun ShadowCard(
 ) {
 
     Box(
-
-        modifier = modifier
-            .padding(1.dp)
+        modifier = Modifier
+            .padding(elevation / 2)
             .fillMaxWidth()
-            .shadow(
-                elevation = elevation,
-                shape = shape,
-                ambientColor = shadowColor,
-                spotColor = shadowColor,
-                clip = false
-            )
+            .background(Color.Transparent)
     ) {
-
-        Card(
-
-            modifier = Modifier
+        Box(
+            modifier = modifier
+                .padding(1.dp)
                 .fillMaxWidth()
-                .padding(top = if (shadowPositions.contains(ShadowPosition.TOP) ||
-                    shadowPositions.contains(ShadowPosition.ALL)) elevation else 0.dp,
-                    bottom = if (shadowPositions.contains(ShadowPosition.BOTTOM) ||
-                        shadowPositions.contains(ShadowPosition.ALL)) elevation else 0.dp,
-                    start =  if (shadowPositions.contains(ShadowPosition.LEFT) ||
-                        shadowPositions.contains(ShadowPosition.ALL)) elevation else 0.dp,
-                    end = if (shadowPositions.contains(ShadowPosition.RIGHT) ||
-                        shadowPositions.contains(ShadowPosition.ALL)) elevation else 0.dp
-                ),
-            shape = shape,
-            border = BorderStroke(0.5.dp, borderColor),
-            colors = CardDefaults.cardColors(
-                containerColor = backgroundColor
-            )
+                .shadow(
+                    elevation = elevation,
+                    shape = shape,
+                    ambientColor = shadowColor.copy(0.6f),
+                    spotColor = shadowColor.copy(0.9f),
+                    clip = false
+                )
         ) {
-
-            content()
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = if (shadowPositions.contains(ShadowPosition.TOP) || shadowPositions.contains(ShadowPosition.ALL)) elevation else 0.dp,
+                        bottom = if (shadowPositions.contains(ShadowPosition.BOTTOM) || shadowPositions.contains(ShadowPosition.ALL)) elevation else 0.dp,
+                        start = if (shadowPositions.contains(ShadowPosition.LEFT) || shadowPositions.contains(ShadowPosition.ALL)) elevation else 0.dp,
+                        end = if (shadowPositions.contains(ShadowPosition.RIGHT) || shadowPositions.contains(ShadowPosition.ALL)) elevation else 0.dp
+                    ),
+                shape = shape,
+                border = BorderStroke(0.5.dp, borderColor),
+                colors = CardDefaults.cardColors(
+                    containerColor = backgroundColor
+                )
+            ) {
+                content()
+            }
         }
     }
 }
