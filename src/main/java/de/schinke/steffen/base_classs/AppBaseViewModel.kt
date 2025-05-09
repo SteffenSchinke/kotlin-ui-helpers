@@ -1,4 +1,4 @@
-package de.schinke.steffen.interfaces
+package de.schinke.steffen.base_classs
 
 import android.util.Log
 import androidx.compose.material3.SnackbarDuration
