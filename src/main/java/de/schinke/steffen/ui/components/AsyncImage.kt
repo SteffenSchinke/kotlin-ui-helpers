@@ -48,40 +48,35 @@ fun AsyncImage(
     val state = painter.state
 
     Box(
+
         modifier = modifier
-            .size(size)
-            .clip(RoundedCornerShape(roundedCorners))
-            .background(bgColor)
             .border(
                 width = 1.dp,
                 color = borderColor,
-                shape = RoundedCornerShape(roundedCorners)
-
+                shape = RoundedCornerShape(roundedCorners + 4.dp)
             )
-            .padding(4.dp),
+            .padding(10.dp)
+            .clip(RoundedCornerShape(roundedCorners))
+            .background(bgColor)
+            .size(size),
         contentAlignment = Alignment.Center
     ) {
 
         when (state) {
-
             is AsyncImagePainter.State.Loading -> {
-
                 CircularProgressIndicator(modifier = Modifier.size(24.dp))
             }
             is AsyncImagePainter.State.Success -> {
-
                 Image(
                     painter = painter,
                     contentDescription = "Cover",
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            is AsyncImagePainter.State.Error-> {
-
+            is AsyncImagePainter.State.Error -> {
                 Icon(Icons.Default.BrokenImage, contentDescription = "Error")
             }
             else -> {
-
                 Icon(Icons.Default.BrokenImage, contentDescription = "Error")
             }
         }
