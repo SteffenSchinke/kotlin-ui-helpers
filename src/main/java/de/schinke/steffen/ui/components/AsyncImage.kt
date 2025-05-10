@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BrokenImage
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +29,7 @@ import coil.request.ImageRequest
 @Composable
 fun AsyncImage(
 
+    modifier: Modifier = Modifier,
     url: String,
     size: Dp = 80.dp,
     roundedCorners: Dp = 12.dp,
@@ -48,7 +48,7 @@ fun AsyncImage(
     val state = painter.state
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(size)
             .clip(RoundedCornerShape(roundedCorners))
             .background(bgColor)

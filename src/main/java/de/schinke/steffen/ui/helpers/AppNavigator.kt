@@ -1,6 +1,7 @@
 package de.schinke.steffen.ui.helpers
 
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
@@ -76,6 +77,8 @@ fun AppNavigator(
 
     LaunchedEffect(Unit) {
 
+        Log.d("AppNavigator::${navCurrentRoute}", "snackbarHost initialize ...")
+
         AppSnackbar.setHost(snackbarHostState)
     }
 
@@ -88,6 +91,8 @@ fun AppNavigator(
         },
         snackbarHost = {
 
+            Log.d("AppNavigator::${navCurrentRoute}", "snackbarHost start ...")
+
             AppSnackbar.snackbarMessage.collectAsState().value?.let { message ->
 
                 Box(modifier = Modifier.fillMaxSize()) {
@@ -97,11 +102,13 @@ fun AppNavigator(
                         hostState = snackbarHostState,
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
-                            .offset(y =
-                                if (navActiveScreen.fab != null)
-                                    snackbarHeight + fabHeight
-                                else
-                                    0.dp),
+                            .offset(
+                                y =
+                                    if (navActiveScreen.fab != null)
+                                        snackbarHeight + fabHeight
+                                    else
+                                        0.dp
+                            ),
                         snackbar = {
                             CustomSnackbar(
                                 modifier = Modifier
@@ -118,6 +125,8 @@ fun AppNavigator(
         },
         floatingActionButton = {
 
+            Log.d("AppNavigator::${navCurrentRoute}", "fab start ...")
+
             AnimatedVisibility(
 
                 visible = true,
@@ -125,11 +134,13 @@ fun AppNavigator(
                 exit = fabExitAnimation
             ) {
 
-                Box(modifier = Modifier
-                    .padding(bottom = fabBottomOffset)
-                    .onPlaced{ layout ->
-                        fabHeight = with(density) { layout.size.height.toDp() + 12.dp /* padding fab */ }
-                    }) {
+                Box(
+                    modifier = Modifier
+                        .padding(bottom = fabBottomOffset)
+                        .onPlaced { layout ->
+                            fabHeight =
+                                with(density) { layout.size.height.toDp() + 12.dp /* padding fab */ }
+                        }) {
 
                     navActiveScreen.fab?.invoke(navController)
                 }
@@ -137,60 +148,62 @@ fun AppNavigator(
         },
         bottomBar = {
 
-            if( navActiveScreen is AppTabRoute)  {
+            Log.d("AppNavigator::${navCurrentRoute}", "bottombar start ...")
 
-                    NavigationBar {
+            if (navActiveScreen is AppTabRoute) {
 
-                        allTabRoutes.forEach { screen ->
+                NavigationBar {
 
-                            NavigationBarItem(
-                                icon = { Icon(screen.icon, null) },
-                                label = { Text(screen.title) },
-                                selected = navCurrentRoute == screen.route,
-                                onClick = {
-                                    navController.navigate(screen.route) {
-                                        popUpTo(navController.graph.startDestinationId) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
+                    allTabRoutes.forEach { screen ->
+
+                        NavigationBarItem(
+                            icon = { Icon(screen.icon, null) },
+                            label = { Text(screen.title) },
+                            selected = navCurrentRoute == screen.route,
+                            onClick = {
+                                navController.navigate(screen.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
                                     }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                            )
-                        }
+                            }
+                        )
                     }
                 }
-            },
-        content = {
+            }
+        },
+        content = { innerPadding: PaddingValues ->
 
-            innerPadding: PaddingValues ->
+            Log.d("AppNavigator::${navCurrentRoute}", "content start ...")
 
-                Surface(
+            Surface(
 
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .padding(horizontal = 16.dp)
-                        .fillMaxSize()
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .padding(horizontal = 16.dp)
+                    .fillMaxSize()
+            ) {
+
+                NavHost(
+
+                    navController = navController,
+                    startDestination = (startScreen as AppRoute).route
                 ) {
 
-                    NavHost(
+                    allRoutes.forEach { screen ->
 
-                        navController = navController,
-                        startDestination = (startScreen as AppRoute).route
-                    ) {
+                        composable(screen.route, arguments = screen.arguments) {
 
-                        allRoutes.forEach { screen ->
+                            (screen as AppScreenContent).apply {
 
-                            composable(screen.route, arguments = screen.arguments) {
-
-                                (screen as AppScreenContent).apply {
-
-                                    content(navController)
-                                }
+                                content(navController)
                             }
                         }
                     }
                 }
             }
+        }
     )
 }

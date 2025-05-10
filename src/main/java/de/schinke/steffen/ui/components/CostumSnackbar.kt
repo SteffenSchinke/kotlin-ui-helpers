@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import de.schinke.steffen.enums.SnackbarMode
@@ -103,6 +104,8 @@ private fun CustomSnackbarMessages(snackbarMessage: AppSnackbarMessage) {
                 fontSize = MaterialTheme.typography.titleLarge.fontSize,
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold),
                 modifier = Modifier.padding(bottom = 16.dp),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 color = if (snackbarMessage.mode == SnackbarMode.ERROR)
                     MaterialTheme.colorScheme.error
                 else
