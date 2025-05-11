@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 abstract class AppBaseViewModel<S>(initialState: S): ViewModel() {
 
-     protected val nameViewModel: String
+    protected val viewModelName: String
         get() = this::class.simpleName ?: "UnknownViewModel"
 
     private val _state = MutableStateFlow(initialState)
@@ -23,7 +23,7 @@ abstract class AppBaseViewModel<S>(initialState: S): ViewModel() {
 
         _state.value = newState(_state.value)
 
-        Log.d(nameViewModel, "setState(${_state.value})")
+        Log.d("STS::$viewModelName", "setState(${_state.value})")
     }
 
     protected fun showMessageInSnackbar(
@@ -52,6 +52,6 @@ abstract class AppBaseViewModel<S>(initialState: S): ViewModel() {
             )
         }
 
-        Log.d(nameViewModel, "showMessageInSnackbar(message: ${message}, mode: ${mode}, messageCode: ${messageCode}, actionOnNewLine: ${actionOnNewLine}, actionLabel: ${actionLabel}, actionAction: ${mode.title})")
+        Log.d("STS::$viewModelName", "showMessageInSnackbar(message: ${message}, mode: ${mode}, messageCode: ${messageCode}, actionOnNewLine: ${actionOnNewLine}, actionLabel: ${actionLabel}, actionAction: ${mode.title})")
     }
 }

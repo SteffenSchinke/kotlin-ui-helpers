@@ -1,9 +1,10 @@
 package de.schinke.steffen.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -62,10 +63,12 @@ fun CustomSnackbar(
                 CustomSnackbarButtons(snackbarMessage, snackbarHostState)
             } else {
 
-                Row {
+                Box(
+
+                    modifier = modifier.fillMaxWidth()
+                ) {
 
                     CustomSnackbarMessages(snackbarMessage)
-                    Spacer(modifier = Modifier.weight(1f))
                     CustomSnackbarButtons(snackbarMessage, snackbarHostState)
                 }
             }
@@ -153,6 +156,8 @@ private fun CustomSnackbarButtons(
         }
 
         if (snackbarMessage.withDismissAction) {
+
+            Log.d("STS::CostumSnackbar", "set dismiss button start ...")
 
             IconButton(onClick = { snackbarHostState.currentSnackbarData?.dismiss() }) {
                 Icon(Icons.Default.Close, null, tint = MaterialTheme.colorScheme.error)

@@ -55,7 +55,7 @@ fun AppNavigator(
 
     val navController = rememberNavController()
     val navCurrentBackStack by navController.currentBackStackEntryAsState()
-    val navCurrentRoute = navCurrentBackStack?.destination?.route ?: "No Route"
+    val navCurrentRoute = navCurrentBackStack?.destination?.route ?: "No Route Found"
     val navActiveScreen: AppScreenContent = allRoutes.find {
         it.route == navCurrentRoute && it is AppScreenContent
     } as? AppScreenContent ?: startScreen
@@ -77,7 +77,7 @@ fun AppNavigator(
 
     LaunchedEffect(Unit) {
 
-        Log.d("AppNavigator::${navCurrentRoute}", "snackbarHost initialize ...")
+        Log.d("STS::AppNavigator::${navCurrentRoute}", "snackbarHost initialize ...")
 
         AppSnackbar.setHost(snackbarHostState)
     }
@@ -91,7 +91,7 @@ fun AppNavigator(
         },
         snackbarHost = {
 
-            Log.d("AppNavigator::${navCurrentRoute}", "snackbarHost start ...")
+            Log.d("STS::AppNavigator::${navCurrentRoute}", "snackbarHost start ...")
 
             AppSnackbar.snackbarMessage.collectAsState().value?.let { message ->
 
@@ -125,7 +125,7 @@ fun AppNavigator(
         },
         floatingActionButton = {
 
-            Log.d("AppNavigator::${navCurrentRoute}", "fab start ...")
+            Log.d("STS::AppNavigator::${navCurrentRoute}", "fab start ...")
 
             AnimatedVisibility(
 
@@ -148,7 +148,7 @@ fun AppNavigator(
         },
         bottomBar = {
 
-            Log.d("AppNavigator::${navCurrentRoute}", "bottombar start ...")
+            Log.d("STS::AppNavigator::${navCurrentRoute}", "bottombar start ...")
 
             if (navActiveScreen is AppTabRoute) {
 
@@ -176,7 +176,7 @@ fun AppNavigator(
         },
         content = { innerPadding: PaddingValues ->
 
-            Log.d("AppNavigator::${navCurrentRoute}", "content start ...")
+            Log.d("STS::AppNavigator::${navCurrentRoute}", "content start ...")
 
             Surface(
 

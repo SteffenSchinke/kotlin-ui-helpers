@@ -8,7 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
-open class AppApiBaseClass(
+abstract class AppApiBaseClass(
 
     private val baseUrl: String = "https://fakestoreapi.com/"
 ) {
