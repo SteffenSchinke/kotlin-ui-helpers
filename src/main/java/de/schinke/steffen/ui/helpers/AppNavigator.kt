@@ -148,7 +148,7 @@ fun AppNavigator(
         },
         bottomBar = {
 
-            Log.d("STS::AppNavigator::${navCurrentRoute}", "bottombar start ...")
+            Log.d("STS::AppNavigator::${navCurrentRoute}", "bottom bar start ...")
 
             if (navActiveScreen is AppTabRoute) {
 
