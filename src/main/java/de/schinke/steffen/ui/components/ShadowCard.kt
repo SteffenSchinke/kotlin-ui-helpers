@@ -1,19 +1,24 @@
 package de.schinke.steffen.ui.components
 
 
-import androidx.compose.foundation.BorderStroke
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.schinke.steffen.enums.ShadowPosition
@@ -21,50 +26,163 @@ import de.schinke.steffen.enums.ShadowPosition
 @Composable
 fun ShadowCard(
     modifier: Modifier = Modifier,
-    elevation: Dp = 10.dp,
-    shadowPositions: Set<ShadowPosition> = setOf(ShadowPosition.ALL),
+    elevation: Dp = 8.dp,
+    shadowPositions: Set<ShadowPosition> = setOf(ShadowPosition.RIGHT, ShadowPosition.TOP),
     shadowColor: Color = Color.Unspecified,
-    backgroundColor: Color = Color.Unspecified,
     borderColor: Color = Color.Unspecified,
-    shape: Shape = RoundedCornerShape(12.dp),
+    borderSize: Dp = 1.dp,
+    cornerRadius: Dp = 24.dp,
     content: @Composable () -> Unit
 ) {
 
+    val shape: Shape = RoundedCornerShape(cornerRadius)
+
     Box(
-        modifier = Modifier
-            .padding(elevation / 2)
+        modifier = modifier
             .fillMaxWidth()
-            .background(Color.Transparent)
+            .shadowByPosition(
+                color = shadowColor,
+                alpha = 0.5f,
+                blurRadius = elevation,
+                cornerRadius = cornerRadius,
+                shadowPositions = shadowPositions
+            )
+            .clip(shape)
+            .background(MaterialTheme.colorScheme.surface)
+            .border(borderSize, borderColor, shape)
     ) {
-        Box(
-            modifier = modifier
-                .padding(1.dp)
-                .fillMaxWidth()
-                .shadow(
-                    elevation = elevation,
-                    shape = shape,
-                    ambientColor = shadowColor.copy(0.6f),
-                    spotColor = shadowColor.copy(0.9f),
-                    clip = false
-                )
-        ) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = if (shadowPositions.contains(ShadowPosition.TOP) || shadowPositions.contains(ShadowPosition.ALL)) elevation else 0.dp,
-                        bottom = if (shadowPositions.contains(ShadowPosition.BOTTOM) || shadowPositions.contains(ShadowPosition.ALL)) elevation else 0.dp,
-                        start = if (shadowPositions.contains(ShadowPosition.LEFT) || shadowPositions.contains(ShadowPosition.ALL)) elevation else 0.dp,
-                        end = if (shadowPositions.contains(ShadowPosition.RIGHT) || shadowPositions.contains(ShadowPosition.ALL)) elevation else 0.dp
-                    ),
-                shape = shape,
-                border = BorderStroke(1.dp, borderColor),
-                colors = CardDefaults.cardColors(
-                    containerColor = backgroundColor
-                )
-            ) {
-                content()
-            }
-        }
+        content()
     }
+
+    Spacer(modifier = Modifier.padding(top = elevation))
+}
+
+// ChatGPT
+@SuppressLint("SuspiciousModifierThen")
+fun Modifier.shadowByPosition(
+    color: Color,
+    alpha: Float = 0.5f,
+    blurRadius: Dp = 0.dp,
+    cornerRadius: Dp = 0.dp,
+    shadowPositions: Set<ShadowPosition>
+): Modifier {
+    var result = this
+
+    if (shadowPositions.contains(ShadowPosition.LEFT)) {
+        result = result.then(
+            Modifier.drawBehind {
+                drawIntoCanvas { canvas ->
+                    val paint = android.graphics.Paint().apply {
+                        isAntiAlias = true
+                        this.color = color.copy(alpha = 0.01f).toArgb()
+                        setShadowLayer(
+                            blurRadius.toPx(),
+                            -blurRadius.toPx(),
+                            0f,
+                            color.copy(alpha = alpha).toArgb()
+                        )
+                    }
+
+                    canvas.nativeCanvas.drawRoundRect(
+                        0f,
+                        0f,
+                        size.width,
+                        size.height,
+                        cornerRadius.toPx(),
+                        cornerRadius.toPx(),
+                        paint
+                    )
+                }
+            }
+        )
+    }
+
+    if (shadowPositions.contains(ShadowPosition.RIGHT)) {
+        result = result.then(
+            Modifier.drawBehind {
+                drawIntoCanvas { canvas ->
+                    val paint = android.graphics.Paint().apply {
+                        isAntiAlias = true
+                        this.color = color.copy(alpha = 0.01f).toArgb()
+                        setShadowLayer(
+                            blurRadius.toPx(),
+                            blurRadius.toPx(),
+                            0f,
+                            color.copy(alpha = alpha).toArgb()
+                        )
+                    }
+
+                    canvas.nativeCanvas.drawRoundRect(
+                        0f,
+                        0f,
+                        size.width,
+                        size.height,
+                        cornerRadius.toPx(),
+                        cornerRadius.toPx(),
+                        paint
+                    )
+                }
+            }
+        )
+    }
+
+    if (shadowPositions.contains(ShadowPosition.TOP)) {
+        result = result.then(
+            Modifier.drawBehind {
+                drawIntoCanvas { canvas ->
+                    val paint = android.graphics.Paint().apply {
+                        isAntiAlias = true
+                        this.color = color.copy(alpha = 0.01f).toArgb()
+                        setShadowLayer(
+                            blurRadius.toPx(),
+                            0f,
+                            -blurRadius.toPx(),
+                            color.copy(alpha = alpha).toArgb()
+                        )
+                    }
+
+                    canvas.nativeCanvas.drawRoundRect(
+                        0f,
+                        0f,
+                        size.width,
+                        size.height,
+                        cornerRadius.toPx(),
+                        cornerRadius.toPx(),
+                        paint
+                    )
+                }
+            }
+        )
+    }
+
+    if (shadowPositions.contains(ShadowPosition.BOTTOM)) {
+        result = result.then(
+            Modifier.drawBehind {
+                drawIntoCanvas { canvas ->
+                    val paint = android.graphics.Paint().apply {
+                        isAntiAlias = true
+                        this.color = color.copy(alpha = 0.01f).toArgb()
+                        setShadowLayer(
+                            blurRadius.toPx(),
+                            0f,
+                            blurRadius.toPx(),
+                            color.copy(alpha = alpha).toArgb()
+                        )
+                    }
+
+                    canvas.nativeCanvas.drawRoundRect(
+                        0f,
+                        0f,
+                        size.width,
+                        size.height,
+                        cornerRadius.toPx(),
+                        cornerRadius.toPx(),
+                        paint
+                    )
+                }
+            }
+        )
+    }
+
+    return result
 }

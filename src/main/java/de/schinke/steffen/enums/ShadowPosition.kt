@@ -4,6 +4,5 @@ enum class ShadowPosition {
     TOP,
     BOTTOM,
     LEFT,
-    RIGHT,
-    ALL
+    RIGHT
 }
