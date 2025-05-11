@@ -14,7 +14,8 @@ object AppSnackbar {
     private val _snackbarNotificationMode =
         MutableStateFlow<MutableList<SnackbarMode>>(
             mutableListOf(
-                SnackbarMode.ERROR
+                SnackbarMode.ERROR,
+                SnackbarMode.INFO
             )
         )
 
