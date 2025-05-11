@@ -58,7 +58,7 @@ fun ShadowCard(
                         end = if (shadowPositions.contains(ShadowPosition.RIGHT) || shadowPositions.contains(ShadowPosition.ALL)) elevation else 0.dp
                     ),
                 shape = shape,
-                border = BorderStroke(0.5.dp, borderColor),
+                border = BorderStroke(1.dp, borderColor),
                 colors = CardDefaults.cardColors(
                     containerColor = backgroundColor
                 )
