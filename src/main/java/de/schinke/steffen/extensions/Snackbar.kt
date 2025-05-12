@@ -1,6 +1,5 @@
 package de.schinke.steffen.extensions
 
-// SnackbarExtensions.kt
 import android.util.Log
 import androidx.compose.material3.SnackbarDuration
 import androidx.lifecycle.ViewModel
