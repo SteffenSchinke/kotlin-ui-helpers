@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import de.schinke.steffen.enums.SnackbarMode
 import de.schinke.steffen.models.AppSnackbarMessage
-import de.schinke.steffen.ui.R
 
 @Composable
 fun CustomSnackbar(
@@ -87,13 +86,7 @@ private fun CustomSnackbarMessages(snackbarMessage: AppSnackbarMessage) {
         Row {
 
             Icon(
-                painterResource(
-                    when(snackbarMessage.mode) {
-                        SnackbarMode.ERROR  -> R.drawable.ic_error_outline
-                        SnackbarMode.INFO   -> R.drawable.ic_info_outline
-                        SnackbarMode.TIP    -> R.drawable.ic_tip_outline
-                    }
-                ),
+                painterResource(snackbarMessage.mode.iconId),
                 "Icon",
                 modifier = Modifier.padding(end = 16.dp),
                 tint = if (snackbarMessage.mode == SnackbarMode.ERROR)

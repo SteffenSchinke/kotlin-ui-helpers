@@ -1,8 +1,10 @@
 package de.schinke.steffen.enums
 
-enum class SnackbarMode(val title: String) {
+import de.schinke.steffen.ui.R
 
-    ERROR("Fehler"),
-    TIP("Hinweis"),
-    INFO("Info")
+enum class SnackbarMode(val title: String, val iconId: Int) {
+
+    ERROR("Fehler", R.drawable.ic_error_outline),
+    TIP("Hinweis", R.drawable.ic_tip_outline),
+    INFO("Info", R.drawable.ic_info_outline)
 }
