@@ -7,8 +7,6 @@ import de.schinke.steffen.enums.ViewModelState
 
 interface AppScreenContent {
 
-    val viewModel: AppBaseViewModel<ViewModelState>
-
     val content: @Composable (navController: NavHostController) -> Unit
 
     val tabBar: (@Composable (navController: NavHostController) -> Unit)?

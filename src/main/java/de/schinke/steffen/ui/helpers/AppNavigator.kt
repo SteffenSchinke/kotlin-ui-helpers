@@ -85,10 +85,6 @@ fun AppNavigator(
     Scaffold(
 
         modifier = Modifier.fillMaxSize(),
-        topBar = {
-
-            navActiveScreen.tabBar?.invoke(navController)
-        },
         snackbarHost = {
 
             Log.d("STS::AppNavigator::${navCurrentRoute}", "snackbarHost start ...")
@@ -123,26 +119,37 @@ fun AppNavigator(
                 }
             }
         },
+        topBar = {
+
+            navActiveScreen.tabBar?.let { tolBar ->
+
+                Log.d("STS::AppNavigator::${navCurrentRoute}", "topBar start ...")
+                tolBar.invoke(navController)
+            }
+        },
         floatingActionButton = {
 
-            Log.d("STS::AppNavigator::${navCurrentRoute}", "fab start ...")
+            navActiveScreen.fab?.let { fab ->
 
-            AnimatedVisibility(
+                Log.d("STS::AppNavigator::${navCurrentRoute}", "fab start ...")
 
-                visible = true,
-                enter = fabEnterAnimation,
-                exit = fabExitAnimation
-            ) {
+                AnimatedVisibility(
 
-                Box(
-                    modifier = Modifier
-                        .padding(bottom = fabBottomOffset)
-                        .onPlaced { layout ->
-                            fabHeight =
-                                with(density) { layout.size.height.toDp() + 12.dp /* padding fab */ }
-                        }) {
+                    visible = true,
+                    enter = fabEnterAnimation,
+                    exit = fabExitAnimation
+                ) {
 
-                    navActiveScreen.fab?.invoke(navController)
+                    Box(
+                        modifier = Modifier
+                            .padding(bottom = fabBottomOffset)
+                            .onPlaced { layout ->
+                                fabHeight =
+                                    with(density) { layout.size.height.toDp() + 12.dp /* padding fab */ }
+                            }) {
+
+                        fab.invoke(navController)
+                    }
                 }
             }
         },
