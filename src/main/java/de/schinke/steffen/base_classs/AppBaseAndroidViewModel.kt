@@ -11,7 +11,6 @@ import de.schinke.steffen.services.AppSnackbar
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlin.coroutines.EmptyCoroutineContext.get
 
 abstract class AppBaseAndroidViewModel<S>(application: Application, initialState: S): AndroidViewModel(application) {
 
