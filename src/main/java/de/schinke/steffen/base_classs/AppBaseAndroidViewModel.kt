@@ -26,33 +26,4 @@ abstract class AppBaseAndroidViewModel<S>(application: Application, initialState
 
         Log.d("STS::$viewModelName", "setState(${_state.value})")
     }
-
-    protected fun showMessageInSnackbar(
-        message: String,
-        mode: SnackbarMode = SnackbarMode.INFO,
-        messageCode: String? = null,
-        actionOnNewLine: Boolean = false,
-        actionLabel: String? = null,
-        actionAction: (() -> Unit)? = null,
-        withDismissAction: Boolean = true,
-        duration: SnackbarDuration = SnackbarDuration.Short) {
-
-        viewModelScope.launch {
-
-            AppSnackbar.sendToSnackbar(
-                AppSnackbarMessage(
-                    mode = mode,
-                    message = message,
-                    messageCode = messageCode,
-                    actionOnNewLine = actionOnNewLine,
-                    actionLabel = actionLabel,
-                    onAction = actionAction,
-                    withDismissAction = withDismissAction,
-                    duration = duration
-                )
-            )
-        }
-
-        Log.d("STS::$viewModelName", "showMessageInSnackbar(message: ${message}, mode: ${mode}, messageCode: ${messageCode}, actionOnNewLine: ${actionOnNewLine}, actionLabel: ${actionLabel}, actionAction: ${mode.title})")
-    }
 }
