@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -21,12 +23,14 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,31 +43,37 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import de.schinke.steffen.interfaces.AppRoute
-import de.schinke.steffen.interfaces.AppScreenContent
-import de.schinke.steffen.interfaces.AppTabRoute
+import de.schinke.steffen.interfaces.AppRouteContent
+import de.schinke.steffen.interfaces.AppRouteSheet
+import de.schinke.steffen.interfaces.AppRouteTab
 import de.schinke.steffen.services.AppSnackbar
 import de.schinke.steffen.ui.components.CustomSnackbar
+import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigator(
 
-    startScreen: AppScreenContent,
+    startScreen: AppRouteContent,
     allRoutes: List<AppRoute>,
-    allTabRoutes: List<AppTabRoute>
+    allTabRoutes: List<AppRouteTab>
 ) {
 
     val navController = rememberNavController()
     val navCurrentBackStack by navController.currentBackStackEntryAsState()
     val navCurrentRoute = navCurrentBackStack?.destination?.route ?: "No Route Found"
-    val navActiveScreen: AppScreenContent = allRoutes.find {
-        it.route == navCurrentRoute && it is AppScreenContent
-    } as? AppScreenContent ?: startScreen
+    val navActiveScreen: AppRouteContent = allRoutes.find {
+        it.route == navCurrentRoute
+    } as? AppRouteContent ?: startScreen
     val snackbarHostState = remember { SnackbarHostState() }
     var snackbarHeight by remember { mutableStateOf(0.dp) }
     var fabHeight by remember { mutableStateOf(0.dp) }
     val isSnackbarVisible = snackbarHostState.currentSnackbarData != null
+    var activeSheet by remember { mutableStateOf<AppRouteSheet?>(null) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val density = LocalDensity.current
+    val coroutineScope = rememberCoroutineScope()
     val fabBottomOffset by animateDpAsState(
         targetValue = if (isSnackbarVisible) snackbarHeight else 0.dp,
         label = "FAB Offset Animation"
@@ -80,6 +90,25 @@ fun AppNavigator(
         Log.d("STS::AppNavigator::${navCurrentRoute}", "snackbarHost initialize ...")
 
         AppSnackbar.setHost(snackbarHostState)
+    }
+
+    if (activeSheet != null) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                coroutineScope.launch {
+                    sheetState.hide()
+                    activeSheet = null
+                }
+            },
+            sheetState = sheetState
+        ) {
+            activeSheet?.contentSheet?.invoke(navController, sheetState) {
+                coroutineScope.launch {
+                    sheetState.hide()
+                    activeSheet = null
+                }
+            }
+        }
     }
 
     Scaffold(
@@ -124,7 +153,12 @@ fun AppNavigator(
             navActiveScreen.tabBar?.let { tolBar ->
 
                 Log.d("STS::AppNavigator::${navCurrentRoute}", "topBar start ...")
-                tolBar.invoke(navController)
+                tolBar(navController) { sheet ->
+                    coroutineScope.launch {
+                        activeSheet = sheet
+                        sheetState.show()
+                    }
+                }
             }
         },
         floatingActionButton = {
@@ -148,7 +182,12 @@ fun AppNavigator(
                                     with(density) { layout.size.height.toDp() + 12.dp /* padding fab */ }
                             }) {
 
-                        fab.invoke(navController)
+                        fab.invoke(navController)  { sheet ->
+                            coroutineScope.launch {
+                                activeSheet = sheet
+                                sheetState.show()
+                            }
+                        }
                     }
                 }
             }
@@ -157,7 +196,7 @@ fun AppNavigator(
 
             Log.d("STS::AppNavigator::${navCurrentRoute}", "bottom bar start ...")
 
-            if (navActiveScreen is AppTabRoute) {
+            if (navActiveScreen is AppRouteTab) {
 
                 NavigationBar {
 
@@ -200,12 +239,14 @@ fun AppNavigator(
                 ) {
 
                     allRoutes.forEach { screen ->
-
                         composable(screen.route, arguments = screen.arguments) {
-
-                            (screen as AppScreenContent).apply {
-
-                                content(navController)
+                            (screen as AppRouteContent).content?.let { content ->
+                                content(navController)  { sheet ->
+                                    coroutineScope.launch {
+                                        activeSheet = sheet
+                                        sheetState.show()
+                                    }
+                                }
                             }
                         }
                     }

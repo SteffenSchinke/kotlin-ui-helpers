@@ -34,6 +34,7 @@ android {
 
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.material.navigation)
     implementation(libs.androidx.material)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icons.extended)
@@ -47,7 +48,7 @@ dependencies {
     implementation(libs.coil.gif)
     implementation(libs.moshi)
     implementation(libs.retrofit)
-    implementation(libs.converterMoshi)
+    implementation(libs.converter.moshi)
     implementation(libs.logging.interceptor)
     implementation(libs.androidx.datastore.preferences)
 }
