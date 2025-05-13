@@ -33,18 +33,15 @@ android {
 
 
 dependencies {
-
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.material.icons.extended)
     implementation(libs.androidx.material)
-    implementation(libs.material3)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.material.icons.extended)
     implementation(libs.navigation.compose)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.material.icons.extended)
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)
     implementation(libs.coil.gif)
@@ -53,7 +50,4 @@ dependencies {
     implementation(libs.converterMoshi)
     implementation(libs.logging.interceptor)
     implementation(libs.androidx.datastore.preferences)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }
