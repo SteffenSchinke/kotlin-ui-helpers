@@ -38,10 +38,13 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NamedNavArgument
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import de.schinke.steffen.interfaces.AppRoute
 import de.schinke.steffen.interfaces.AppRouteContent
 import de.schinke.steffen.interfaces.AppRouteSheet
@@ -66,10 +69,12 @@ fun AppNavigator(
     val navActiveScreen: AppRouteContent = allRoutes.find {
         it.route == navCurrentRoute
     } as? AppRouteContent ?: startScreen
+
     val snackbarHostState = remember { SnackbarHostState() }
     var snackbarHeight by remember { mutableStateOf(0.dp) }
-    var fabHeight by remember { mutableStateOf(0.dp) }
     val isSnackbarVisible = snackbarHostState.currentSnackbarData != null
+
+    var fabHeight by remember { mutableStateOf(0.dp) }
     var activeSheet by remember { mutableStateOf<AppRouteSheet?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val density = LocalDensity.current
@@ -84,6 +89,8 @@ fun AppNavigator(
     val fabExitAnimation = remember {
         fadeOut() + slideOutVertically(targetOffsetY = { it / 2 })
     }
+
+    Log.d("STS::AppNavigator", "start mit currentRoute(${navCurrentRoute}) ...")
 
     LaunchedEffect(Unit) {
 
@@ -239,10 +246,26 @@ fun AppNavigator(
                 ) {
 
                     allRoutes.forEach { screen ->
+
+                        Log.d("STS::AppNavigator",  "create route: ${screen.route} ...")
+                        Log.d("STS::AppNavigator",  "create route: args ${screen.arguments} ...")
+
                         composable(screen.route, arguments = screen.arguments) {
+
+                            Log.d("STS::AppNavigator",  "create route2: ${screen.route} ...")
+
                             (screen as AppRouteContent).content?.let { content ->
+
+                                Log.d("STS::AppNavigator",  "create route3: ${screen.route} ...")
+
                                 content(navController)  { sheet ->
+
+                                    Log.d("STS::AppNavigator",  "create route4: ${screen.route} ...")
+
                                     coroutineScope.launch {
+
+                                        Log.d("STS::AppNavigator",  "create route5: ${screen.route} ...")
+
                                         activeSheet = sheet
                                         sheetState.show()
                                     }
