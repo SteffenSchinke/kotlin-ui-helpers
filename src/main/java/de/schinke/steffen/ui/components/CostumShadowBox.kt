@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -24,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import de.schinke.steffen.enums.ShadowPosition
 
 @Composable
-fun ShadowCard(
+fun CostumShadowBox(
     modifier: Modifier = Modifier,
     elevation: Dp = 8.dp,
     shadowPositions: Set<ShadowPosition> = setOf(ShadowPosition.RIGHT, ShadowPosition.TOP),
@@ -35,11 +34,11 @@ fun ShadowCard(
     content: @Composable () -> Unit
 ) {
 
-    val shape: Shape = RoundedCornerShape(cornerRadius)
+    val shape: Shape = RoundedCornerShape(cornerRadius + cornerRadius / 3)
 
     Box(
         modifier = modifier
-            .fillMaxWidth()
+//            .fillMaxWidth()
             .shadowByPosition(
                 color = shadowColor,
                 alpha = 0.5f,
