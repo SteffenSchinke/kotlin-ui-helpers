@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BrokenImage
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -19,11 +17,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import de.schinke.steffen.ui.R
 
 
 @Composable
@@ -74,10 +74,12 @@ fun AsyncImage(
                 )
             }
             is AsyncImagePainter.State.Error -> {
-                Icon(Icons.Default.BrokenImage, contentDescription = "Error")
+                Icon(painterResource(R.drawable.ic_broken_image),
+                     contentDescription = "Error")
             }
             else -> {
-                Icon(Icons.Default.BrokenImage, contentDescription = "Error")
+                Icon(painterResource(R.drawable.ic_broken_image),
+                     contentDescription = "Error")
             }
         }
     }
