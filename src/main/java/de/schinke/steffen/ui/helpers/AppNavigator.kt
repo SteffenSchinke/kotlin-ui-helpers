@@ -166,7 +166,7 @@ fun AppNavigator(
 
         topBar = {
 
-            navActiveScreen.tabBar?.let { topBar ->
+            navActiveScreen.topBar?.let { topBar ->
 
                 Log.d("STS::AppNavigator::${navCurrentRoute}", "topBar start ...")
 

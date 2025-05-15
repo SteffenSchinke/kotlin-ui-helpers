@@ -18,7 +18,7 @@ interface AppRouteContent: AppRoute {
 
 
 
-    val tabBar: (@Composable (
+    val topBar: (@Composable (
         navController: NavHostController,
         onShowSheet: (AppRouteSheet, Bundle?) -> Unit
     ) -> Unit)?
