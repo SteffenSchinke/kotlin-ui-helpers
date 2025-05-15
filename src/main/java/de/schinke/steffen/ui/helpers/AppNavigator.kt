@@ -111,12 +111,7 @@ fun AppNavigator(
 
     activeSheet?.let {
         ModalBottomSheet(
-            onDismissRequest = {
-                coroutineScope.launch {
-                    sheetState.hide()
-                    activeSheet = null
-                }
-            },
+            onDismissRequest = { onDismiss() },
             sheetState = sheetState
         ) {
 
