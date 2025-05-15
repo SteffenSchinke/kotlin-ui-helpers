@@ -1,6 +1,7 @@
 package de.schinke.steffen.ui.helpers
 
 
+import android.os.Bundle
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
@@ -38,13 +39,10 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import de.schinke.steffen.interfaces.AppRoute
 import de.schinke.steffen.interfaces.AppRouteContent
 import de.schinke.steffen.interfaces.AppRouteSheet
@@ -74,11 +72,13 @@ fun AppNavigator(
     var snackbarHeight by remember { mutableStateOf(0.dp) }
     val isSnackbarVisible = snackbarHostState.currentSnackbarData != null
 
-    var fabHeight by remember { mutableStateOf(0.dp) }
     var activeSheet by remember { mutableStateOf<AppRouteSheet?>(null) }
+    var sheetArgs by remember { mutableStateOf<Bundle?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
+
+    val density = LocalDensity.current
+    var fabHeight by remember { mutableStateOf(0.dp) }
     val fabBottomOffset by animateDpAsState(
         targetValue = if (isSnackbarVisible) snackbarHeight else 0.dp,
         label = "FAB Offset Animation"
@@ -89,17 +89,27 @@ fun AppNavigator(
     val fabExitAnimation = remember {
         fadeOut() + slideOutVertically(targetOffsetY = { it / 2 })
     }
+    val onDismiss: () -> Unit = {
+        coroutineScope.launch {
+            sheetState.hide()
+            activeSheet = null
+        }
+    }
+    val showSheet: (AppRouteSheet, Bundle?) -> Unit = { sheet, args ->
+        coroutineScope.launch {
+            sheetArgs = args
+            activeSheet = sheet
+            sheetState.show()
+        }
+    }
 
-    Log.d("STS::AppNavigator", "start mit currentRoute(${navCurrentRoute}) ...")
+    Log.d("STS::AppNavigator", "AppNavigator start mit route(${navCurrentRoute}) ...")
 
     LaunchedEffect(Unit) {
-
-        Log.d("STS::AppNavigator::${navCurrentRoute}", "snackbarHost initialize ...")
-
         AppSnackbar.setHost(snackbarHostState)
     }
 
-    if (activeSheet != null) {
+    activeSheet?.let {
         ModalBottomSheet(
             onDismissRequest = {
                 coroutineScope.launch {
@@ -109,23 +119,21 @@ fun AppNavigator(
             },
             sheetState = sheetState
         ) {
-            activeSheet?.contentSheet?.invoke(navController, sheetState) {
-                coroutineScope.launch {
-                    sheetState.hide()
-                    activeSheet = null
-                }
-            }
+
+            Log.d("STS::AppNavigator", "${activeSheet!!::class.simpleName ?: "Unbekanter Sheet"} sheet start ...")
+            it.contentSheet(navController, sheetState, sheetArgs, showSheet, onDismiss)
         }
     }
 
     Scaffold(
 
         modifier = Modifier.fillMaxSize(),
+
         snackbarHost = {
 
-            Log.d("STS::AppNavigator::${navCurrentRoute}", "snackbarHost start ...")
-
             AppSnackbar.snackbarMessage.collectAsState().value?.let { message ->
+
+                Log.d("STS::AppNavigator::${navCurrentRoute}", "snackbarHost start ...")
 
                 Box(modifier = Modifier.fillMaxSize()) {
 
@@ -155,19 +163,17 @@ fun AppNavigator(
                 }
             }
         },
+
         topBar = {
 
-            navActiveScreen.tabBar?.let { tolBar ->
+            navActiveScreen.tabBar?.let { topBar ->
 
                 Log.d("STS::AppNavigator::${navCurrentRoute}", "topBar start ...")
-                tolBar(navController) { sheet ->
-                    coroutineScope.launch {
-                        activeSheet = sheet
-                        sheetState.show()
-                    }
-                }
+
+                topBar(navController, showSheet)
             }
         },
+
         floatingActionButton = {
 
             navActiveScreen.fab?.let { fab ->
@@ -189,16 +195,12 @@ fun AppNavigator(
                                     with(density) { layout.size.height.toDp() + 12.dp /* padding fab */ }
                             }) {
 
-                        fab.invoke(navController)  { sheet ->
-                            coroutineScope.launch {
-                                activeSheet = sheet
-                                sheetState.show()
-                            }
-                        }
+                        fab.invoke(navController, showSheet)
                     }
                 }
             }
         },
+
         bottomBar = {
 
             Log.d("STS::AppNavigator::${navCurrentRoute}", "bottom bar start ...")
@@ -227,6 +229,7 @@ fun AppNavigator(
                 }
             }
         },
+
         content = { innerPadding: PaddingValues ->
 
             Log.d("STS::AppNavigator::${navCurrentRoute}", "content start ...")
@@ -246,30 +249,18 @@ fun AppNavigator(
                 ) {
 
                     allRoutes.forEach { screen ->
-
-                        Log.d("STS::AppNavigator",  "create route: ${screen.route} ...")
-                        Log.d("STS::AppNavigator",  "create route: args ${screen.arguments} ...")
-
                         composable(screen.route, arguments = screen.arguments) {
-
-                            Log.d("STS::AppNavigator",  "create route2: ${screen.route} ...")
-
                             (screen as AppRouteContent).content?.let { content ->
 
-                                Log.d("STS::AppNavigator",  "create route3: ${screen.route} ...")
+                                Log.d("STS::AppNavigator", "start content ...")
 
-                                content(navController)  { sheet ->
-
-                                    Log.d("STS::AppNavigator",  "create route4: ${screen.route} ...")
-
-                                    coroutineScope.launch {
-
-                                        Log.d("STS::AppNavigator",  "create route5: ${screen.route} ...")
-
-                                        activeSheet = sheet
-                                        sheetState.show()
-                                    }
-                                }
+                                content(
+                                    navController,
+                                    sheetState,
+                                    sheetArgs,
+                                    showSheet,
+                                    onDismiss
+                                )
                             }
                         }
                     }
