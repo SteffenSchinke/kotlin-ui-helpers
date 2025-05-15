@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-abstract class AppBaseAndroidViewModel<S>(application: Application, initialState: S): AndroidViewModel(application) {
+abstract class AppBaseViewModelAndroid<S>(application: Application, initialState: S): AndroidViewModel(application) {
 
     protected val viewModelName: String
         get() = this::class.simpleName ?: "UnknownViewModel"
