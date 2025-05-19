@@ -31,7 +31,7 @@ import de.schinke.steffen.ui.R
 
 
 @Composable
-fun AsyncImage(
+fun CustomAsyncImage(
 
     modifier: Modifier = Modifier,
     url: String,
