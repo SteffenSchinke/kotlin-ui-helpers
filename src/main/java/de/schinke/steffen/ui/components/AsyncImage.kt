@@ -11,6 +11,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,9 +22,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import coil3.size.Size
 import de.schinke.steffen.ui.R
 
 
@@ -37,15 +41,15 @@ fun AsyncImage(
     borderColor: Color = Color.Unspecified
 ) {
 
-    val imageSize = (size.value * LocalDensity.current.density).toInt()
+    val imagePixelSize = with(LocalDensity.current) { size.roundToPx() }
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
             .data(url)
             .crossfade(true)
-            .size(imageSize)
+            .size(Size(imagePixelSize, imagePixelSize))
             .build()
     )
-    val state = painter.state
+    val actualState by painter.state.collectAsState()
 
     Box(
 
@@ -62,7 +66,7 @@ fun AsyncImage(
         contentAlignment = Alignment.Center
     ) {
 
-        when (state) {
+        when (actualState) {
             is AsyncImagePainter.State.Loading -> {
                 CircularProgressIndicator(modifier = Modifier.size(24.dp))
             }

@@ -48,8 +48,22 @@ abstract class AppBaseClassApi(
 //        ): Converter<ResponseBody, *> {
 //
 //            val next = retrofit.nextResponseBodyConverter<Any>(this, type, annotations)
+//
 //            return Converter<ResponseBody, Any?> { body ->
 //                if (body.contentLength() == 0L) null else next.convert(body)
+//            }
+//
+//            return Converter<ResponseBody, Any?> { body ->
+//
+//                val buffer = Buffer()
+//                body.source().readAll(buffer)
+//                if (buffer.size == 0L) {
+//                    null
+//                } else {
+//                    val newBody =
+//                        buffer.clone().asResponseBody(body.contentType(), buffer.size) // buffer.clone() ist wichtig!
+//                    next.convert(newBody)
+//                }
 //            }
 //        }
 //    }
