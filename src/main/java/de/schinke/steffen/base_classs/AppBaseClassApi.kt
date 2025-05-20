@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 
 abstract class AppBaseClassApi(
 
-    private val baseUrl: String = "https://fakestoreapi.com/"
+    private val baseUrl: String
 ) {
 
     private val moshi: Moshi = Moshi.Builder()
