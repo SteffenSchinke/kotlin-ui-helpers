@@ -38,6 +38,7 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -49,6 +50,7 @@ import de.schinke.steffen.interfaces.AppRouteTab
 import de.schinke.steffen.services.AppSnackbar
 import de.schinke.steffen.ui.components.CustomSnackbar
 import kotlinx.coroutines.launch
+import kotlin.reflect.KClass
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -102,6 +104,15 @@ fun AppNavigator(
         }
     }
 
+    // view models for exactly life circle handling
+    val viewModelDependencies = remember(navActiveScreen) {
+        mutableMapOf<KClass<out ViewModel>, ViewModel>()
+    }
+    val viewModelInstances: Map<KClass<out ViewModel>, ViewModel> = navActiveScreen.viewModelDependencies
+        .mapValues { (key, provider) ->
+            viewModelDependencies.getOrPut(key) { provider() }
+        }
+
     Log.d("STS::AppNavigator", "AppNavigator start mit route(${navCurrentRoute}) ...")
 
     LaunchedEffect(Unit) {
@@ -109,13 +120,19 @@ fun AppNavigator(
     }
 
     activeSheet?.let {
+
+        val sheetViewModelMap: Map<KClass<out ViewModel>, ViewModel> = navActiveScreen.viewModelDependencies
+            .mapValues { (key, provider) ->
+                viewModelDependencies.getOrPut(key) { provider() }
+            }
+
         ModalBottomSheet(
             onDismissRequest = { onDismiss() },
             sheetState = sheetState
         ) {
 
             Log.d("STS::AppNavigator", "${activeSheet!!::class.simpleName ?: "Unbekanter Sheet"} sheet start ...")
-            it.contentSheet(navController, sheetState, sheetArgs, showSheet, onDismiss)
+            it.contentSheet(sheetViewModelMap, navController, sheetState, sheetArgs, showSheet, onDismiss)
         }
     }
 
@@ -127,7 +144,7 @@ fun AppNavigator(
 
             AppSnackbar.snackbarMessage.collectAsState().value?.let { message ->
 
-                Log.d("STS::AppNavigator::${navCurrentRoute}", "snackbarHost start ...")
+                Log.d("STS::AppNavigator", "$navCurrentRoute -> snackbarHost start ...")
 
                 Box(modifier = Modifier.fillMaxSize()) {
 
@@ -162,9 +179,9 @@ fun AppNavigator(
 
             navActiveScreen.topBar?.let { topBar ->
 
-                Log.d("STS::AppNavigator::${navCurrentRoute}", "topBar start ...")
+                Log.d("STS::AppNavigator", "$navCurrentRoute -> topBar start ...")
 
-                topBar(navController, showSheet)
+                topBar(viewModelInstances, navController, showSheet)
             }
         },
 
@@ -172,7 +189,7 @@ fun AppNavigator(
 
             navActiveScreen.fab?.let { fab ->
 
-                Log.d("STS::AppNavigator::${navCurrentRoute}", "fab start ...")
+                Log.d("STS::AppNavigator", "$navCurrentRoute -> fab start ...")
 
                 AnimatedVisibility(
 
@@ -189,7 +206,7 @@ fun AppNavigator(
                                     with(density) { layout.size.height.toDp() + 12.dp /* padding fab */ }
                             }) {
 
-                        fab.invoke(navController, showSheet)
+                        fab.invoke(viewModelInstances, navController, showSheet)
                     }
                 }
             }
@@ -197,7 +214,7 @@ fun AppNavigator(
 
         bottomBar = {
 
-            Log.d("STS::AppNavigator::${navCurrentRoute}", "bottom bar start ...")
+            Log.d("STS::AppNavigator", "$navCurrentRoute -> bottom bar start ...")
 
             if (navActiveScreen is AppRouteTab) {
 
@@ -226,7 +243,7 @@ fun AppNavigator(
 
         content = { innerPadding: PaddingValues ->
 
-            Log.d("STS::AppNavigator::${navCurrentRoute}", "content start ...")
+            Log.d("STS::AppNavigator", "$navCurrentRoute -> content start ...")
 
             Surface(
 
@@ -246,9 +263,10 @@ fun AppNavigator(
                         composable(screen.route, arguments = screen.arguments) {
                             (screen as AppRouteContent).content?.let { content ->
 
-                                Log.d("STS::AppNavigator", "start content ...")
+                                Log.d("STS::AppNavigator", "${screen.route} start ...")
 
                                 content(
+                                    viewModelInstances,
                                     navController,
                                     sheetState,
                                     sheetArgs,
