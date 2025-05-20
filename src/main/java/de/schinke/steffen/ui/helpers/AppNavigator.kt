@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -207,8 +206,8 @@ fun AppNavigator(
                     allTabRoutes.forEach { screen ->
 
                         NavigationBarItem(
-                            icon = { Icon(screen.icon, null) },
-                            label = { Text(screen.title) },
+                            icon = { screen.tabIcon() },
+                            label = { Text(screen.tabTitle) },
                             selected = navCurrentRoute == screen.route,
                             onClick = {
                                 navController.navigate(screen.route) {

@@ -1,9 +1,9 @@
 package de.schinke.steffen.interfaces
 
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.runtime.Composable
 
 interface AppRouteTab: AppRoute {
 
-    val title: String
-    val icon: ImageVector
+    val tabTitle: String
+    val tabIcon: @Composable () -> Unit
 }
