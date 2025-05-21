@@ -113,7 +113,7 @@ fun AppNavigator(
             viewModelDependencies.getOrPut(key) { provider() }
         }
 
-    Log.d("STS::AppNavigator", "AppNavigator start mit route(${navCurrentRoute}) ...")
+    Log.d("STS::AppNavigator", "AppNavigator start mit route(${navActiveScreen.route}) ...")
 
     LaunchedEffect(Unit) {
         AppSnackbar.setHost(snackbarHostState)
@@ -144,7 +144,7 @@ fun AppNavigator(
 
             AppSnackbar.snackbarMessage.collectAsState().value?.let { message ->
 
-                Log.d("STS::AppNavigator", "$navCurrentRoute -> snackbarHost start ...")
+                Log.d("STS::AppNavigator", "${navActiveScreen.route} -> snackbarHost start ...")
 
                 Box(modifier = Modifier.fillMaxSize()) {
 
@@ -179,7 +179,7 @@ fun AppNavigator(
 
             navActiveScreen.topBar?.let { topBar ->
 
-                Log.d("STS::AppNavigator", "$navCurrentRoute -> topBar start ...")
+                Log.d("STS::AppNavigator", "${navActiveScreen.route} -> topBar start ...")
 
                 topBar(viewModelInstances, navController, showSheet)
             }
@@ -189,7 +189,7 @@ fun AppNavigator(
 
             navActiveScreen.fab?.let { fab ->
 
-                Log.d("STS::AppNavigator", "$navCurrentRoute -> fab start ...")
+                Log.d("STS::AppNavigator", "${navActiveScreen.route} -> fab start ...")
 
                 AnimatedVisibility(
 
@@ -214,7 +214,7 @@ fun AppNavigator(
 
         bottomBar = {
 
-            Log.d("STS::AppNavigator", "$navCurrentRoute -> bottom bar start ...")
+            Log.d("STS::AppNavigator", "${navActiveScreen.route} -> bottom bar start ...")
 
             if (navActiveScreen is AppRouteTab) {
 
@@ -243,7 +243,7 @@ fun AppNavigator(
 
         content = { innerPadding: PaddingValues ->
 
-            Log.d("STS::AppNavigator", "$navCurrentRoute -> content start ...")
+            Log.d("STS::AppNavigator", "${navActiveScreen.route} -> content start ...")
 
             Surface(
 
