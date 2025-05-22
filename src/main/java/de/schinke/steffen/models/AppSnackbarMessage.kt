@@ -1,6 +1,6 @@
 package de.schinke.steffen.models
 
-import androidx.compose.material3.SnackbarDuration
+import de.schinke.steffen.enums.SnackbarDisplayTime
 import de.schinke.steffen.enums.SnackbarMode
 
 data class AppSnackbarMessage(
@@ -12,5 +12,5 @@ data class AppSnackbarMessage(
     val onAction: (() -> Unit)? = null,
     val actionOnNewLine: Boolean = false,
     val withDismissAction: Boolean = true,
-    val duration: SnackbarDuration = SnackbarDuration.Short
+    val duration: SnackbarDisplayTime = SnackbarDisplayTime.SHORT
 )

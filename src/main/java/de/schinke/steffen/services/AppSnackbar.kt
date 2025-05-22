@@ -56,7 +56,7 @@ object AppSnackbar {
                     message = message.message.toString(),
                     actionLabel = message.actionLabel,
                     withDismissAction = message.withDismissAction,
-                    duration = message.duration
+                    duration = message.duration.toSnackbarDuration()
                 )
                 if (result == SnackbarResult.ActionPerformed) {
                     message.onAction?.invoke()
