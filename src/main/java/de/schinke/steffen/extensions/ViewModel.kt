@@ -1,9 +1,9 @@
 package de.schinke.steffen.extensions
 
 import android.util.Log
-import androidx.compose.material3.SnackbarDuration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.schinke.steffen.enums.SnackbarDisplayTime
 import de.schinke.steffen.enums.SnackbarMode
 import de.schinke.steffen.models.AppSnackbarMessage
 import de.schinke.steffen.services.AppSnackbar
@@ -18,7 +18,7 @@ fun ViewModel.sendMessageOnSnackbar(
     actionLabel: String? = null,
     actionAction: (() -> Unit)? = null,
     withDismissAction: Boolean = true,
-    duration: SnackbarDuration = SnackbarDuration.Short
+    duration: SnackbarDisplayTime = SnackbarDisplayTime.SHORT
 ) {
 
     viewModelScope.launch {
