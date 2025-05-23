@@ -10,8 +10,9 @@ This module provides basic structures to efficiently organize **navigation**, **
 ## Features
 
 - **AppLauncher** – Initial loading screen & control of the launch process  
-- **AppNavigator** – Navigation with support for screens, sheets & tabs  
-- **AppRoute / AppTabRoute / AppScreenContent** – Interfaces for a modular UI architecture  
+- **AppNavigator** – Navigation with support for screens, sheets & tabs and integrated snackbar system
+- **AppRoute / AppRouteTab / AppRouteContent / AppRouteSheet** – Interfaces for a modular UI architecture  
+- **AppBaseViewModel || AppBaseViewModelAndroid** Inhered from this for correctly life circles
 - Focus on **reusability**, **clean structure**, and **scalability**
 
 ---
@@ -129,6 +130,13 @@ object HomeRoute: AppTabRoute, AppRouteContent {
             Icon(Icons.Default.Home, "Home")
     }
 
+    // only description from dependencies view models
+    // instance build in the AppNavigator and return as map of instances with correctly life circle
+    override val viewModelDependencies: Map<KClass<out ViewModel>, @Composable (() -> ViewModel)>
+        get() = mapOf(
+            HomeViewModel::class to { koinViewModel<HomeViewModel>() } || HomeViewModel::class to { viewModel<HomeViewModel>() }
+        )
+
     @Composable
     @OptIn(ExperimentalMaterial3Api::class)
     override val content: @Composable ((Map<KClass<out ViewModel>, ViewModel>,
@@ -137,7 +145,7 @@ object HomeRoute: AppTabRoute, AppRouteContent {
                                         Bundle?,
                                         (AppRouteSheet, Bundle?) -> Unit,
                                         () -> Unit) -> Unit)?
-        get() = { _, _, _, _, _, _, ->
+        get() = { viewModelInstances, _, _, _, _, _, ->
            Column {
                Text("Home content")
                Button(onClick = { navController.navigate(DetailRoute.route) }) {
@@ -150,7 +158,7 @@ object HomeRoute: AppTabRoute, AppRouteContent {
     override val topBar: @Composable ((Map<KClass<out ViewModel>, ViewModel>,
                                         NavHostController,
                                         (AppRouteSheet, Bundle?) -> Unit) -> Unit)?
-        get() =  { _, _, _, ->
+        get() =  { viewModelInstances, _, _, ->
             return {
                 TopAppBar(
                     title = {
@@ -164,10 +172,17 @@ object HomeRoute: AppTabRoute, AppRouteContent {
 
 **Combined implementation as sub-composable without sheet navigation:**
 ```bash
-object TaskAdd: AppRoute, AppRouteSheet {
+object Details: AppRoute, AppRouteSheet {
 
     override val route: String
-        get() = "task_add"
+        get() = "details"
+
+    // only description from dependencies view models
+    // instance build in the AppNavigator and return as map of instances with correctly life circle
+    override val viewModelDependencies: Map<KClass<out ViewModel>, @Composable (() -> ViewModel)>
+        get() = mapOf(
+            HomeViewModel::class to { koinViewModel<HomeViewModel>() } || HomeViewModel::class to { viewModel<HomeViewModel>() }
+        )
 
     @OptIn(ExperimentalMaterial3Api::class)
     override val contentSheet: @Composable (Map<KClass<out ViewModel>, ViewModel>
@@ -176,8 +191,8 @@ object TaskAdd: AppRoute, AppRouteSheet {
                                             args: Bundle?,
                                             onShowSheet: (AppRouteSheet, Bundle?) -> Unit,
                                             onDismiss: () -> Unit) -> Unit
-        get() = { _, _, _, _, _, _ ->
-            Add(..., ..., onDismiss)
+        get() = { viewModelInstances, _, _, _, _, _ ->
+            Details([...], [...], onDismiss)
         }
 }
 ```
