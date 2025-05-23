@@ -164,31 +164,21 @@ object HomeRoute: AppTabRoute, AppRouteContent {
 
 **Combined implementation as sub-composable without sheet navigation:**
 ```bash
-object TaskAdd: AppRouteContent, AppRouteSheet {
+object TaskAdd: AppRoute, AppRouteSheet {
 
     override val route: String
         get() = "task_add"
 
     @OptIn(ExperimentalMaterial3Api::class)
-    override val contentSheet: @Composable (navController: NavHostController,
-                                             sheetState: SheetState,
-                                             args: Bundle?,
-                                             onShowSheet: (AppRouteSheet, Bundle?) -> Unit,
-                                             onDismiss: () -> Unit) -> Unit
-        get() = { _, _, _, _, _ ->
+    override val contentSheet: @Composable (Map<KClass<out ViewModel>, ViewModel>
+                                            navController: NavHostController,
+                                            sheetState: SheetState,
+                                            args: Bundle?,
+                                            onShowSheet: (AppRouteSheet, Bundle?) -> Unit,
+                                            onDismiss: () -> Unit) -> Unit
+        get() = { _, _, _, _, _, _ ->
             Add(..., ..., onDismiss)
         }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    override val content: @Composable ((NavHostController, SheetState, Bundle?,
-                                        (AppRouteSheet, Bundle?) -> Unit, () -> Unit) -> Unit)?
-        get() = null
-
-    override val topBar: @Composable ((NavHostController, (AppRouteSheet, Bundle?) -> Unit) -> Unit)?
-        get() = null
-
-    override val fab: @Composable ((NavHostController, (AppRouteSheet, Bundle?) -> Unit) -> Unit)?
-        get() = null
 }
 ```
 
