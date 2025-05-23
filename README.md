@@ -59,101 +59,136 @@ interface AppRoute {
 **AppTabRoute**  
 Extension of AppRoute for tab navigation.
 ```bash
-interface AppTabRoute : AppRoute {
-    val title: String
-    val icon: ImageVector
+interface AppRouteTab: AppRoute {
+    @get:Composable
+    val tabTitle: String
+    val tabIcon: @Composable () -> Unit
 }
 ```
 
-**AppScreenContent**  
-Extension to render any previous route type in the UI.
+**AppRouteContent**  
+Extension to render any previous route type in the UI Screen.
 ```bash
-interface AppScreenContent {
+interface AppRouteContent: AppRoute {
 
-    @Composable
-    fun Content(innerPadding: PaddingValues, navController: NavHostController): @Composable () -> Unit
+    val viewModelDependencies: Map<KClass<out ViewModel>, @Composable () -> ViewModel>
 
-    @Composable
-    fun TopBar(navController: NavHostController): (@Composable () -> Unit)? = null
+    @OptIn(ExperimentalMaterial3Api::class)
+    val content: (@Composable (
+        viewModels: Map<KClass<out ViewModel>, ViewModel>,
+        navController: NavHostController,
+        sheetState: SheetState,
+        args: Bundle?,
+        onShowSheet: (AppRouteSheet, Bundle?) -> Unit,
+        onDismiss: () -> Unit) -> Unit)?
 
-    @Composable
-    fun SnackBar(): (@Composable () -> Unit)? = null
+    val topBar: (@Composable (
+        viewModels: Map<KClass<out ViewModel>, ViewModel>,
+        navController: NavHostController,
+        onShowSheet: (AppRouteSheet, Bundle?) -> Unit
+    ) -> Unit)?
 
-    @Composable
-    fun Fab(navController: NavHostController): (@Composable () -> Unit)? = null
+    val fab: (@Composable (
+        viewModels: Map<KClass<out ViewModel>, ViewModel>,
+        navController: NavHostController,
+        onShowSheet: (AppRouteSheet, Bundle?) -> Unit
+    ) -> Unit)?
 }
+```
+
+**AppRouteSheet**  
+Extension to render any previous route type in the UI Sheet.
+```bash
+interface AppRouteSheet  {
+
+    val viewModelDependencies: Map<KClass<out ViewModel>, @Composable () -> ViewModel>
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    val contentSheet: @Composable (
+        viewModels: Map<KClass<out ViewModel>, ViewModel>,
+        navController: NavHostController,
+        sheetState: SheetState,
+        args: Bundle?,
+        onShowSheet: (AppRouteSheet, Bundle?) -> Unit,
+        onDismiss: () -> Unit
+    ) -> Unit
+}
+
 ```
 
 ## Architecture Principle
 
 **Combined implementation with tab navigation:**
 ```bash
-object HomeRoute: AppTabRoute, AppScreenContent {
+object HomeRoute: AppTabRoute, AppRouteContent {
 
     override val title: String = "Home"
-    override val icon: ImageVector = Icons.Default.Home
     override val route = "home"
+    override val tabIcon: @Composable () -> Unit
+        get() = {
+            Icon(Icons.Default.Home, "Home")
+    }
 
     @Composable
-    override fun Content(
-        padding: PaddingValues,
-        navController: NavHostController) {
-
+    @OptIn(ExperimentalMaterial3Api::class)
+    override val content: @Composable ((Map<KClass<out ViewModel>, ViewModel>,
+                                        NavHostController,
+                                        SheetState,
+                                        Bundle?,
+                                        (AppRouteSheet, Bundle?) -> Unit,
+                                        () -> Unit) -> Unit)?
+        get() = { _, _, _, _, _, _, ->
            Column {
                Text("Home content")
-
                Button(onClick = { navController.navigate(DetailRoute.route) }) {
                    Text("Go details")
                }
            }
-    }
+        }
 
     @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun TopBar(navController: NavHostController): @Composable (() -> Unit)? {
-
-        return {
-            TopAppBar(
-                title = {
-                    Text("Home")
-                }
-            )
+    override val topBar: @Composable ((Map<KClass<out ViewModel>, ViewModel>,
+                                        NavHostController,
+                                        (AppRouteSheet, Bundle?) -> Unit) -> Unit)?
+        get() =  { _, _, _, ->
+            return {
+                TopAppBar(
+                    title = {
+                        Text("Home")
+                    }
+                )
+            }
         }
-    }
 }
 ```
 
-**Combined implementation as sub-composable without tab navigation:**
+**Combined implementation as sub-composable without sheet navigation:**
 ```bash
-object DetailRoute: AppRoute, AppScreenContent {
+object TaskAdd: AppRouteContent, AppRouteSheet {
 
-    override val route = "detail"
-
-    @Composable
-    override fun Content(
-        padding: PaddingValues,
-        navController: NavHostController) {
-
-        Text("Details content")
-    }
+    override val route: String
+        get() = "task_add"
 
     @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun TopBar(navController: NavHostController): @Composable () -> Unit {
-
-        return {
-
-            TopAppBar(
-                title = {
-                    Text("Details")
-                },
-                navigationIcon = {
-
-                    BackButton(navController)
-                }
-            )
+    override val contentSheet: @Composable (navController: NavHostController,
+                                             sheetState: SheetState,
+                                             args: Bundle?,
+                                             onShowSheet: (AppRouteSheet, Bundle?) -> Unit,
+                                             onDismiss: () -> Unit) -> Unit
+        get() = { _, _, _, _, _ ->
+            Add(..., ..., onDismiss)
         }
-    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    override val content: @Composable ((NavHostController, SheetState, Bundle?,
+                                        (AppRouteSheet, Bundle?) -> Unit, () -> Unit) -> Unit)?
+        get() = null
+
+    override val topBar: @Composable ((NavHostController, (AppRouteSheet, Bundle?) -> Unit) -> Unit)?
+        get() = null
+
+    override val fab: @Composable ((NavHostController, (AppRouteSheet, Bundle?) -> Unit) -> Unit)?
+        get() = null
 }
 ```
 
@@ -175,180 +210,3 @@ object DetailRoute: AppRoute, AppScreenContent {
 
 ---
 ---
-
-# Kotlin UI Helper (De)
-
-Ein leichtgewichtiges UI-Hilfsmodul für Android-Projekte mit **Jetpack Compose**.
-
-Dieses Modul stellt grundlegende Strukturen zur Verfügung, um **Navigation**, **App-Start** und **modulare Bildschirmgestaltung** in Compose-Projekten effizient zu organisieren.
-
----
-
-## Features
-
-- **AppLauncher** – Initiale Ladeanzeige & Steuerung des Startvorgangs
-- **AppNavigator** – Navigation mit Unterstützung für Screens, Sheets & Tabs
-- **AppRoute / AppTabRoute / AppScreenContent** – Interfaces für eine modulare UI-Architektur
-- Fokus auf **Wiederverwendbarkeit**, **Saubere Struktur** und **Skalierbarkeit**
-
----
-
-## Installation
-
-### 1. Als Git-Submodul hinzufügen
-
-```bash
-git submodule add https://github.com/SteffenSchinke/kotlin-ui-helpers.git
-git submodule init
-git submodule update
-```
-
-Oder direkt klonen:
-```bash
-git clone https://github.com/SteffenSchinke/kotlin-ui-helpers.git
-```
-
-### 2. In dein Projekt einbinden
-
-In deiner build.gradle.kts des Hauptprojekts:
-```bash
-dependencies {
-    implementation(project(":kotlin-ui-helpers"))
-}
-```
-
-In deiner settings.gradle.kts:
-```bash
-include(":kotlin-ui-helpers")
-```
-
-## Architekturübersicht
-
-AppRoute
-Basisinterface für alle Bildschirmrouten.
-```bash
-interface AppRoute {
-    val route: String
-    val arguments: List<NamedNavArgument> get() = emptyList()
-}
-```
-
-AppTabRoute
-Erweiterung von AppRoute für Tab-Navigation.
-```bash
-interface AppTabRoute : AppRoute {
-    val title: String
-    val icon: ImageVector
-}
-```
-
-AppScreenContent
-Erweiterung um irgend einen vorhergehenden Routen Types in der UI zur Anzeige zu bringen.
-```bash
-interface AppScreenContent {
-
-    @Composable
-    fun Content(innerPadding: PaddingValues, navController: NavHostController): @Composable () -> Unit
-
-    @Composable
-    fun TopBar(navController: NavHostController): (@Composable () -> Unit)? = null
-
-    @Composable
-    fun SnackBar(): (@Composable () -> Unit)? = null
-
-    @Composable
-    fun Fab(navController: NavHostController): (@Composable () -> Unit)? = null
-}
-```
-
-##Architekturprinzip
-
-Kombinierte Implementierung mit Tab Navigation:
-```bash
-object HomeRoute: AppTabRoute, AppScreenContent {
-
-    override val title: String = "Home"
-    override val icon: ImageVector = Icons.Default.Home
-    override val route = "home"
-
-    @Composable
-    override fun Content(
-        padding: PaddingValues,
-        navController: NavHostController) {
-
-           Column {
-               Text("Mein Home Content")
-
-               Button(onClick = { navController.navigate(DetailRoute.route) }) {
-                   Text("Einzelheiten")
-               }
-           }
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun TopBar(navController: NavHostController): @Composable (() -> Unit)? {
-
-        return {
-            TopAppBar(
-                title = {
-                    Text("Mein Home")
-                }
-            )
-        }
-    }
-}
-```
-
-Kombinierte Implementierung als Sub Composable ohne Tab Navigation:
-
-```bash
-object DetailRoute: AppRoute, AppScreenContent {
-
-    override val route = "detail"
-
-    @Composable
-    override fun Content(
-        padding: PaddingValues,
-        navController: NavHostController) {
-
-        Text("Meine Einzelheiten!")
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun TopBar(navController: NavHostController): @Composable () -> Unit {
-
-        return {
-
-            TopAppBar(
-                title = {
-                    Text("Mein Einstellungen")
-                },
-                navigationIcon = {
-
-                    BackButton(navController)
-                }
-            )
-        }
-    }
-}
-```
-
-## Autor
-
-**Steffen Schinke**  
-📧 steffen.schinke.dev@gmail.com  
-🔗 [GitHub](https://github.com/SteffenSchinke)
-
-### Skills
-
-- **Sprachen & Frameworks**:  
-  C++, C#, VB.NET, Swift 6.0, Kotlin 2.0  
-  HTML, CSS, JavaScript, PHP
-
-- **Datenbanken**:  
-  MySQL, Oracle, SQL Server
-
-
-
