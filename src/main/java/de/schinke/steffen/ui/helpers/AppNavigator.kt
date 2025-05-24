@@ -32,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onPlaced
@@ -71,7 +72,7 @@ fun AppNavigator(
 
     val snackbarHostState = remember { SnackbarHostState() }
     var snackbarHeight by remember { mutableStateOf(0.dp) }
-    val isSnackbarVisible = snackbarHostState.currentSnackbarData != null
+    val isSnackbarVisible = remember { mutableStateOf(false) }
 
     var activeSheet by remember { mutableStateOf<AppRouteSheet?>(null) }
     var sheetArgs by remember { mutableStateOf<Bundle?>(null) }
@@ -81,7 +82,7 @@ fun AppNavigator(
     val density = LocalDensity.current
     var fabHeight by remember { mutableStateOf(0.dp) }
     val fabBottomOffset by animateDpAsState(
-        targetValue = if (isSnackbarVisible) snackbarHeight else 0.dp,
+        targetValue = if (isSnackbarVisible.value) snackbarHeight else 0.dp,
         label = "FAB Offset Animation"
     )
     val fabEnterAnimation = remember {
@@ -117,6 +118,13 @@ fun AppNavigator(
 
     LaunchedEffect(Unit) {
         AppSnackbar.setHost(snackbarHostState)
+    }
+
+    LaunchedEffect(snackbarHostState) {
+        snapshotFlow { snackbarHostState.currentSnackbarData }
+            .collect { data ->
+                isSnackbarVisible.value = data != null
+            }
     }
 
     activeSheet?.let {
