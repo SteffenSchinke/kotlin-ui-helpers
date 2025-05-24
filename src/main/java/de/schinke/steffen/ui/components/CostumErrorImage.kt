@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import de.schinke.steffen.ui.R
 
 @Composable
-fun ErrorImage() {
+fun CostumErrorImage() {
 
     Icon(
         painter = painterResource(R.drawable.ic_warning),
