@@ -10,7 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun CustomProgressCircle() {
+fun CustomProgressCircle(
+
+    size: Float = 40f
+) {
 
     Box(
 
@@ -18,6 +21,6 @@ fun CustomProgressCircle() {
         contentAlignment = Alignment.Center
     ) {
 
-        CircularProgressIndicator(modifier = Modifier.size(40.dp))
+        CircularProgressIndicator(modifier = Modifier.size(size.dp))
     }
 }
