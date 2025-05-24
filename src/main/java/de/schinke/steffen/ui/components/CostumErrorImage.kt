@@ -10,12 +10,15 @@ import androidx.compose.ui.unit.dp
 import de.schinke.steffen.ui.R
 
 @Composable
-fun CostumErrorImage() {
+fun CostumErrorImage(
+
+    size: Float = 60f
+) {
 
     Icon(
         painter = painterResource(R.drawable.ic_warning),
         contentDescription = "Error",
-        modifier = Modifier.size(60.dp),
+        modifier = Modifier.size(size.dp),
         tint = MaterialTheme.colorScheme.tertiary.copy(0.1f)
     )
 }
