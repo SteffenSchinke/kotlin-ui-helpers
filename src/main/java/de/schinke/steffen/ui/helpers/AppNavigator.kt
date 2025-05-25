@@ -60,7 +60,8 @@ fun AppNavigator(
 
     startScreen: AppRouteContent,
     allRoutes: List<AppRoute>,
-    allTabRoutes: List<AppRouteTab>
+    allTabRoutes: List<AppRouteTab>,
+    surfaceModifier: Modifier = Modifier
 ) {
 
     val navController = rememberNavController()
@@ -255,7 +256,7 @@ fun AppNavigator(
 
             Surface(
 
-                modifier = Modifier
+                modifier = surfaceModifier
                     .padding(innerPadding)
                     .padding(horizontal = 16.dp)
                     .fillMaxSize()

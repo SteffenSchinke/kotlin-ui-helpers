@@ -142,7 +142,10 @@ private fun CustomSnackbarButtons(
         snackbarMessage.actionLabel?.let { title ->
             snackbarMessage.onAction?.let { onAction ->
 
-                TextButton(onClick = { onAction.invoke() }) {
+                TextButton(onClick = {
+                    onAction.invoke()
+                    snackbarHostState.currentSnackbarData?.dismiss()
+                }) {
                     Text(title)
                 }
             }
