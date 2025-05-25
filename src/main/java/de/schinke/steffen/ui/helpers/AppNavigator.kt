@@ -58,10 +58,10 @@ import kotlin.reflect.KClass
 @Composable
 fun AppNavigator(
 
+    modifier: Modifier = Modifier,
     startScreen: AppRouteContent,
     allRoutes: List<AppRoute>,
-    allTabRoutes: List<AppRouteTab>,
-    surfaceModifier: Modifier = Modifier
+    allTabRoutes: List<AppRouteTab>
 ) {
 
     val navController = rememberNavController()
@@ -256,7 +256,7 @@ fun AppNavigator(
 
             Surface(
 
-                modifier = surfaceModifier
+                modifier = modifier
                     .padding(innerPadding)
                     .padding(horizontal = 16.dp)
                     .fillMaxSize()
