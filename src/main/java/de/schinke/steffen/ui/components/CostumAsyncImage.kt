@@ -5,11 +5,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -39,7 +39,8 @@ fun CostumAsyncImage(
     size: Dp = 80.dp,
     roundedCorners: Dp = 12.dp,
     bgColor: Color = Color.White,
-    borderColor: Color = Color.Unspecified
+    borderSize: Dp = 1.dp,
+    borderColor: Color = MaterialTheme.colorScheme.secondary
 ) {
 
     val imagePixelSize = with(LocalDensity.current) { size.roundToPx() }
@@ -56,11 +57,10 @@ fun CostumAsyncImage(
 
         modifier = modifier
             .border(
-                width = 1.dp,
+                width = borderSize,
                 color = borderColor,
                 shape = RoundedCornerShape(roundedCorners + 4.dp)
             )
-            .padding(10.dp)
             .clip(RoundedCornerShape(roundedCorners))
             .background(bgColor)
             .size(size),

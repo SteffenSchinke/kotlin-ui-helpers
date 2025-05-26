@@ -15,9 +15,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -35,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -61,7 +65,9 @@ fun AppNavigator(
     modifier: Modifier = Modifier,
     startScreen: AppRouteContent,
     allRoutes: List<AppRoute>,
-    allTabRoutes: List<AppRouteTab>
+    allTabRoutes: List<AppRouteTab>,
+    navigationBottomBarColor: Color = MaterialTheme.colorScheme.surface,
+    navgationBottomBarItemColors: NavigationBarItemColors = NavigationBarItemDefaults.colors()
 ) {
 
     val navController = rememberNavController()
@@ -227,7 +233,10 @@ fun AppNavigator(
 
             if (navActiveScreen is AppRouteTab) {
 
-                NavigationBar {
+                NavigationBar(
+
+                    containerColor = navigationBottomBarColor,
+                ) {
 
                     allTabRoutes.forEach { screen ->
 
@@ -243,7 +252,8 @@ fun AppNavigator(
                                     launchSingleTop = true
                                     restoreState = true
                                 }
-                            }
+                            },
+                            colors = navgationBottomBarItemColors
                         )
                     }
                 }
