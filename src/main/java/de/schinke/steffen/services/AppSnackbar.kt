@@ -1,5 +1,6 @@
 package de.schinke.steffen.services
 
+import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import de.schinke.steffen.enums.SnackbarMode
@@ -14,8 +15,10 @@ object AppSnackbar {
     private val _snackbarNotificationMode =
         MutableStateFlow<MutableList<SnackbarMode>>(
             mutableListOf(
+                SnackbarMode.INFO,
+                SnackbarMode.TIP,
                 SnackbarMode.ERROR,
-                SnackbarMode.INFO
+                SnackbarMode.QUESTION
             )
         )
 
@@ -62,6 +65,9 @@ object AppSnackbar {
                     message.onAction?.invoke()
                 }
             }
+        } else {
+
+            Log.w("AppSnackbar Service", "Achtung der Mode ${message.mode} ist in der Configuration deaktiviert")
         }
     }
 }

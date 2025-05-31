@@ -6,5 +6,6 @@ enum class SnackbarMode(val title: String, val iconId: Int) {
 
     ERROR("Fehler", R.drawable.ic_warning),
     TIP("Hinweis", R.drawable.ic_tip_outline),
-    INFO("Info", R.drawable.ic_info_outline)
+    INFO("Info", R.drawable.ic_info_outline),
+    QUESTION("Frage", R.drawable.ic_question)
 }
