@@ -136,7 +136,7 @@ fun AppNavigator(
 
     activeSheet?.let {
 
-        val sheetViewModelMap: Map<KClass<out ViewModel>, ViewModel> = navActiveScreen.viewModelDependencies
+        val sheetViewModelMap: Map<KClass<out ViewModel>, ViewModel> = activeSheet!!.viewModelDependencies
             .mapValues { (key, provider) ->
                 viewModelDependencies.getOrPut(key) { provider() }
             }
