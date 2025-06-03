@@ -5,5 +5,5 @@ class AppNotificationChannel(
 
     val channelName: String,
     val channelId: Int,
-    val iconId: Int) {
-}
+    val iconId: Int
+)
