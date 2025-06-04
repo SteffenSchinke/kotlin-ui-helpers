@@ -23,14 +23,14 @@ class AppNotification(
 
         val importance = NotificationManager.IMPORTANCE_DEFAULT
         val notificationChannel = NotificationChannel(
-            channel.channelId.toString(),
-            channel.channelName,
+            channel.id,
+            channel.name,
             importance
         ).apply {
-            description = "Benachrichtigungen für ${channel.channelName}"
+            description = "Benachrichtigungen für ${channel.name}"
         }
 
-        if (notificationManager.getNotificationChannel(channel.channelName) == null) {
+        if (notificationManager.getNotificationChannel(channel.id) == null) {
             notificationManager.createNotificationChannel(notificationChannel)
         }
     }
@@ -41,14 +41,14 @@ class AppNotification(
         if (hasNotificationPermission) {
             val appName = context.applicationInfo.loadLabel(context.packageManager).toString()
 
-            val notification = NotificationCompat.Builder(context, channel.channelName)
+            val notification = NotificationCompat.Builder(context, channel.id)
                 .setSmallIcon(channel.iconId)
                 .setContentTitle(appName)
                 .setContentText(message)
                 .setPriority(priority)
                 .build()
 
-            notificationManager.notify(channel.channelId, notification)
+            notificationManager.notify(channel.id.hashCode(), notification)
         } else {
 
             Log.i(AppNotification::class.simpleName, "Notification permission not granted")

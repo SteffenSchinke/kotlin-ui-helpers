@@ -3,7 +3,7 @@ package de.schinke.steffen.base_classs
 
 class AppNotificationChannel(
 
-    val channelName: String,
-    val channelId: Int,
+    val id: String,
+    val name: String,
     val iconId: Int
 )
