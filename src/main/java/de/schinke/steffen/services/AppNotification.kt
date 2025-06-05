@@ -16,7 +16,8 @@ class AppNotification(
     private val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    val hasNotificationPermission: Boolean = notificationManager.areNotificationsEnabled()
+    val hasNotificationPermission: Boolean
+        get() = notificationManager.areNotificationsEnabled()
 
 
     init {
