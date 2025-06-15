@@ -2,6 +2,8 @@ package de.schinke.steffen.base_classs
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import de.schinke.steffen.interfaces.AppJwtTokenProvider
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -10,7 +12,8 @@ import java.util.concurrent.TimeUnit
 
 abstract class AppBaseClassApi(
 
-    private val baseUrl: String
+    private val baseUrl: String,
+    private val jwtTokenProvider: AppJwtTokenProvider
 ) {
 
     private val moshi: Moshi = Moshi.Builder()
@@ -21,7 +24,20 @@ abstract class AppBaseClassApi(
         level = HttpLoggingInterceptor.Level.BODY
     }
 
+    private val authInterceptor = Interceptor { chain ->
+        val original = chain.request()
+        val token = jwtTokenProvider.getJwtToken()
+
+        val requestBuilder = original.newBuilder()
+        token?.let {
+            requestBuilder.addHeader("Authorization", "Bearer $it")
+        }
+
+        chain.proceed(requestBuilder.build())
+    }
+
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(authInterceptor)
         .addInterceptor(loggingInterceptor)
         .readTimeout(30, TimeUnit.SECONDS)
         .connectTimeout(30, TimeUnit.SECONDS)
@@ -31,40 +47,6 @@ abstract class AppBaseClassApi(
     protected val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)
         .client(okHttpClient)
-        //.addConverterFactory(NullOnEmptyConverterFactory())
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
-
-    // fall: wenn resonse success ok aber body leer ist dann kommt ein null pointer exception,
-    // weil moshi beim zugriff auf body selbst bei der prüfung != null automatisch gleich parst
-    // und deswegen der null pointer exception ausgelöst wird
-//    private class NullOnEmptyConverterFactory : Converter.Factory() {
-//
-//        override fun responseBodyConverter(
-//
-//            type: Type,
-//            annotations: Array<out Annotation>,
-//            retrofit: Retrofit
-//        ): Converter<ResponseBody, *> {
-//
-//            val next = retrofit.nextResponseBodyConverter<Any>(this, type, annotations)
-//
-//            return Converter<ResponseBody, Any?> { body ->
-//                if (body.contentLength() == 0L) null else next.convert(body)
-//            }
-//
-//            return Converter<ResponseBody, Any?> { body ->
-//
-//                val buffer = Buffer()
-//                body.source().readAll(buffer)
-//                if (buffer.size == 0L) {
-//                    null
-//                } else {
-//                    val newBody =
-//                        buffer.clone().asResponseBody(body.contentType(), buffer.size) // buffer.clone() ist wichtig!
-//                    next.convert(newBody)
-//                }
-//            }
-//        }
-//    }
 }
