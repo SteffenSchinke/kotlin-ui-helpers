@@ -1,6 +1,6 @@
 package de.schinke.steffen.interfaces
 
-interface AppJwtTokenProvider {
+interface AppJwtProvider {
 
     fun getJwtToken(): String?
 }

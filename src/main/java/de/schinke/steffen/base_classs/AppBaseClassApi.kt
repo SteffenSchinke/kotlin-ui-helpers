@@ -2,7 +2,7 @@ package de.schinke.steffen.base_classs
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import de.schinke.steffen.interfaces.AppJwtTokenProvider
+import de.schinke.steffen.interfaces.AppJwtProvider
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 abstract class AppBaseClassApi(
 
     private val baseUrl: String,
-    private val jwtTokenProvider: AppJwtTokenProvider
+    private val jwtTokenProvider: AppJwtProvider
 ) {
 
     private val moshi: Moshi = Moshi.Builder()
