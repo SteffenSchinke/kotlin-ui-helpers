@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -46,7 +47,7 @@ fun CustomSnackbar(
         modifier = modifier
             .padding(8.dp)
             .padding(bottom = 8.dp)
-            .fillMaxWidth()
+            .fillMaxWidth(0.9f)
             .shadow(6.dp, RoundedCornerShape(8.dp))
             .zIndex(1f)
     ) {
