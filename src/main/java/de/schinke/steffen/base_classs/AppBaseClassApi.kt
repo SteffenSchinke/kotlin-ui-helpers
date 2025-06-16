@@ -13,7 +13,8 @@ import java.util.concurrent.TimeUnit
 abstract class AppBaseClassApi(
 
     private val baseUrl: String,
-    private val jwtTokenProvider: AppJwtProvider
+    private val jwtTokenProvider: AppJwtProvider,
+    private val headerOrigin: String? = null,
 ) {
 
     private val moshi: Moshi = Moshi.Builder()
@@ -29,6 +30,11 @@ abstract class AppBaseClassApi(
         val token = jwtTokenProvider.getJwtToken()
 
         val requestBuilder = original.newBuilder()
+
+        headerOrigin?.let {
+            requestBuilder.addHeader("Origin", it)
+        }
+
         token?.let {
             requestBuilder.addHeader("Authorization", "Bearer $it")
         }
