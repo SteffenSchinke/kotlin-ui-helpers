@@ -1,6 +1,5 @@
 package de.schinke.steffen.base_classs
 
-import android.util.Log
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import de.schinke.steffen.interfaces.AppJwtProvider
