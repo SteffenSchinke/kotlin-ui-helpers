@@ -9,6 +9,11 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.ToJson
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 abstract class AppBaseClassApi(
 
@@ -18,6 +23,7 @@ abstract class AppBaseClassApi(
 ) {
 
     private val moshi: Moshi = Moshi.Builder()
+        .add(LocalDateTimeFormatter())
         .add(KotlinJsonAdapterFactory())
         .build()
 
@@ -55,4 +61,26 @@ abstract class AppBaseClassApi(
         .client(okHttpClient)
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
+
+    private class LocalDateTimeFormatter {
+
+        companion object {
+            private val FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        }
+
+        @FromJson
+        fun fromJson(json: String?): LocalDateTime? {
+            return json?.let {
+                try {
+                    LocalDateTime.parse(it, FORMATTER)
+                } catch (e: DateTimeParseException) { null }
+            }
+        }
+
+        @ToJson
+        fun toJson(value: LocalDateTime?): String? {
+            return value?.format(FORMATTER)
+        }
+    }
 }
+
