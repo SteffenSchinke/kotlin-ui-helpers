@@ -21,8 +21,6 @@ interface AppRouteContent: AppRoute {
         onShowSheet: (AppRouteSheet, Bundle?) -> Unit,
         onDismiss: () -> Unit) -> Unit)?
 
-
-
     val topBar: (@Composable (
         viewModels: Map<KClass<out ViewModel>, ViewModel>,
         navController: NavHostController,
