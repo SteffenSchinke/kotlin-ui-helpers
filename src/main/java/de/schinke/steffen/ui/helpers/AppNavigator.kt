@@ -67,7 +67,7 @@ fun AppNavigator(
     allRoutes: List<AppRoute>,
     allTabRoutes: List<AppRouteTab>,
     navigationBottomBarColor: Color = MaterialTheme.colorScheme.surface,
-    navgationBottomBarItemColors: NavigationBarItemColors = NavigationBarItemDefaults.colors()
+    navigationBottomBarItemColors: NavigationBarItemColors = NavigationBarItemDefaults.colors()
 ) {
 
     val navController = rememberNavController()
@@ -253,7 +253,7 @@ fun AppNavigator(
                                     restoreState = true
                                 }
                             },
-                            colors = navgationBottomBarItemColors
+                            colors = navigationBottomBarItemColors
                         )
                     }
                 }
