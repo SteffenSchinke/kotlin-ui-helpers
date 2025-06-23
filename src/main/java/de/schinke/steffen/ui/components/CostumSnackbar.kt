@@ -146,7 +146,10 @@ private fun CustomSnackbarButtons(
                     onAction.invoke()
                     snackbarHostState.currentSnackbarData?.dismiss()
                 }) {
-                    Text(title)
+                    Text(
+                        text = title,
+                        color = MaterialTheme.colorScheme.secondaryContainer,
+                    )
                 }
             }
         }
@@ -156,7 +159,7 @@ private fun CustomSnackbarButtons(
             Log.d("STS::CostumSnackbar", "set dismiss button start ...")
 
             IconButton(onClick = { snackbarHostState.currentSnackbarData?.dismiss() }) {
-                Icon(Icons.Default.Close, null, tint = MaterialTheme.colorScheme.error)
+                Icon(Icons.Default.Close, null, tint = MaterialTheme.colorScheme.secondaryContainer)
             }
         }
     }

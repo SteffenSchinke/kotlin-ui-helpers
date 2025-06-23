@@ -66,6 +66,7 @@ fun AppNavigator(
     startScreen: AppRouteContent,
     allRoutes: List<AppRoute>,
     allTabRoutes: List<AppRouteTab>,
+    backgroundComposable: (@Composable () -> Unit)? = null,
     navigationBottomBarColor: Color = MaterialTheme.colorScheme.surface,
     navigationBottomBarItemColors: NavigationBarItemColors = NavigationBarItemDefaults.colors()
 ) {
@@ -271,6 +272,8 @@ fun AppNavigator(
                     .padding(horizontal = 16.dp)
                     .fillMaxSize()
             ) {
+
+                backgroundComposable?.let { it() }
 
                 NavHost(
 
