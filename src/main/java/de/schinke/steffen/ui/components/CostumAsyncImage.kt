@@ -40,7 +40,9 @@ fun CostumAsyncImage(
     roundedCorners: Dp = 12.dp,
     bgColor: Color = Color.White,
     borderSize: Dp = 1.dp,
-    borderColor: Color = MaterialTheme.colorScheme.secondary
+    borderColor: Color = MaterialTheme.colorScheme.secondary,
+    defaultIconColor: Color = Color.Gray,
+    defaultIconInt: Int = R.drawable.ic_broken_image
 ) {
 
     val imagePixelSize = with(LocalDensity.current) { size.roundToPx() }
@@ -80,12 +82,16 @@ fun CostumAsyncImage(
                 )
             }
             is AsyncImagePainter.State.Error -> {
-                Icon(painterResource(R.drawable.ic_broken_image),
-                     contentDescription = "Error")
+                Icon(painter = painterResource(R.drawable.ic_broken_image),
+                     contentDescription = "Error",
+                     tint = defaultIconColor
+                )
             }
             else -> {
-                Icon(painterResource(R.drawable.ic_broken_image),
-                     contentDescription = "Error")
+                Icon(painter = painterResource(defaultIconInt),
+                    contentDescription = "Error",
+                    tint = defaultIconColor
+                )
             }
         }
     }
