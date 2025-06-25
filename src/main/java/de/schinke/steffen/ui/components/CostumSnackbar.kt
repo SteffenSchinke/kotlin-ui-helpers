@@ -89,10 +89,12 @@ private fun CustomSnackbarMessages(snackbarMessage: AppSnackbarMessage) {
                 painterResource(snackbarMessage.mode.iconId),
                 "Icon",
                 modifier = Modifier.padding(end = 16.dp),
-                tint = if (snackbarMessage.mode == SnackbarMode.ERROR)
-                    MaterialTheme.colorScheme.error
-                else
-                    MaterialTheme.colorScheme.primary
+                tint = when(snackbarMessage.mode) {
+                    SnackbarMode.ERROR -> MaterialTheme.colorScheme.error
+                    SnackbarMode.QUESTION -> MaterialTheme.colorScheme.error.copy(alpha = 0.8f)
+                    SnackbarMode.TIP-> MaterialTheme.colorScheme.error.copy(alpha = 0.6f)
+                    else -> MaterialTheme.colorScheme.primary
+                }
             )
 
             Text(
@@ -102,10 +104,13 @@ private fun CustomSnackbarMessages(snackbarMessage: AppSnackbarMessage) {
                 modifier = Modifier.padding(bottom = 16.dp),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                color = if (snackbarMessage.mode == SnackbarMode.ERROR)
-                    MaterialTheme.colorScheme.error
-                else
-                    MaterialTheme.colorScheme.primary
+                color =
+                    when(snackbarMessage.mode) {
+                        SnackbarMode.ERROR -> MaterialTheme.colorScheme.error
+                        SnackbarMode.QUESTION -> MaterialTheme.colorScheme.error.copy(alpha = 0.8f)
+                        SnackbarMode.TIP-> MaterialTheme.colorScheme.error.copy(alpha = 0.6f)
+                        else -> MaterialTheme.colorScheme.primary
+                    }
             )
         }
 

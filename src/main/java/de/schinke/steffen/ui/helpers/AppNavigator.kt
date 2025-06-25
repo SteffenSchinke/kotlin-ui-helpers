@@ -265,15 +265,16 @@ fun AppNavigator(
 
             Log.d("STS::AppNavigator", "${navActiveScreen.route} -> content start ...")
 
+            backgroundComposable?.let { it() }
+
             Surface(
 
+                color = Color.Transparent,
                 modifier = modifier
                     .padding(innerPadding)
                     .padding(horizontal = 16.dp)
                     .fillMaxSize()
             ) {
-
-                backgroundComposable?.let { it() }
 
                 NavHost(
 
