@@ -29,15 +29,15 @@ abstract class AppBaseViewModelAndroid<E>(
         Log.d("STS::$viewModelName", "setState(${_state.value})")
     }
 
-    protected fun resetError() {
-
-        _error.value = null
-        _state.value = ViewModelState.READY
-    }
-
     protected fun setError(newValue: E) {
 
         _error.value = newValue
         _state.value = ViewModelState.ERROR
+    }
+
+    fun resetError() {
+
+        _error.value = null
+        _state.value = ViewModelState.READY
     }
 }
