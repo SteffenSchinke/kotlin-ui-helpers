@@ -3,21 +3,35 @@ package de.schinke.steffen.base_classs
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import de.schinke.steffen.enums.ViewModelState
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-abstract class AppBaseViewModelAndroid<S>(application: Application, initialState: S): AndroidViewModel(application) {
+abstract class AppBaseViewModelAndroid<E>(
+
+    application: Application
+): AndroidViewModel(application) {
 
     protected val viewModelName: String
         get() = this::class.simpleName ?: "UnknownViewModel"
 
-    private val _state = MutableStateFlow(initialState)
+    private val _state = MutableStateFlow(ViewModelState.READY)
     val state = _state.asStateFlow()
 
-    protected fun setState(newState: (S) -> S) {
+    private val _error = MutableStateFlow<E?>(null)
+    val error: StateFlow<E?> = _error
 
-        _state.value = newState(_state.value)
+    protected fun setState(newState: ViewModelState) {
+
+        _state.value = newState
 
         Log.d("STS::$viewModelName", "setState(${_state.value})")
+    }
+
+    protected fun resetError() {
+
+        _error.value = null
+        _state.value = ViewModelState.READY
     }
 }
