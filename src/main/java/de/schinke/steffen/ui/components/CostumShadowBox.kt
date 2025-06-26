@@ -28,6 +28,7 @@ fun CostumShadowBox(
     shadowPositions: Set<ShadowPosition> = setOf(ShadowPosition.RIGHT, ShadowPosition.TOP),
     shadowColor: Color = Color.Unspecified,
     borderColor: Color = Color.Unspecified,
+    backgroundColor: Color = MaterialTheme.colorScheme.surface,
     borderSize: Dp = 1.dp,
     cornerRadius: Dp = 24.dp,
     content: @Composable () -> Unit
@@ -46,7 +47,7 @@ fun CostumShadowBox(
                 shadowPositions = shadowPositions
             )
             .clip(shape)
-            .background(MaterialTheme.colorScheme.surface)
+            .background(backgroundColor)
             .border(borderSize, borderColor, shape)
     ) {
         content()
