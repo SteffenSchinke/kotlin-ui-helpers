@@ -34,4 +34,10 @@ abstract class AppBaseViewModelAndroid<E>(
         _error.value = null
         _state.value = ViewModelState.READY
     }
+
+    protected fun setError(newValue: E) {
+
+        _error.value = newValue
+        _state.value = ViewModelState.ERROR
+    }
 }
