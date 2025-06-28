@@ -24,7 +24,7 @@ fun <T> CostumOutlineDropdownMenu(
     items: List<T>,
     selectedItem: T?,
     onItemSelected: (T) -> Unit,
-    itemLabel: (T) -> String,
+    onSelectedItemLabel: (T) -> String,
     label: String = "Auswahl"
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -34,7 +34,7 @@ fun <T> CostumOutlineDropdownMenu(
         onExpandedChange = { expanded = !expanded }
     ) {
         OutlinedTextField(
-            value = selectedItem?.let(itemLabel) ?: "",
+            value = selectedItem?.let(onSelectedItemLabel) ?: "",
             onValueChange = {},
             readOnly = true,
             label = { Text(label) },
@@ -55,7 +55,7 @@ fun <T> CostumOutlineDropdownMenu(
                 DropdownMenuItem(
                     text = {
                         Text(
-                            text = itemLabel(item),
+                            text = onSelectedItemLabel(item),
                             style = MaterialTheme.typography.bodyLarge
                         )
                     },
