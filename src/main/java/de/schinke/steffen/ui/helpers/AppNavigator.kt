@@ -67,6 +67,7 @@ fun AppNavigator(
     allRoutes: List<AppRoute>,
     allTabRoutes: List<AppRouteTab>,
     backgroundComposable: (@Composable () -> Unit)? = null,
+    specialBottomBarIconComposable: (@Composable () -> Unit)? = null,
     navigationBottomBarColor: Color = MaterialTheme.colorScheme.surface,
     navigationBottomBarItemColors: NavigationBarItemColors = NavigationBarItemDefaults.colors()
 ) {
@@ -254,6 +255,18 @@ fun AppNavigator(
                                     restoreState = true
                                 }
                             },
+                            colors = navigationBottomBarItemColors
+                        )
+                    }
+
+                    specialBottomBarIconComposable?.let {
+
+                        NavigationBarItem(
+                            selected = false,
+                            onClick = { },
+                            enabled = true,
+                            label = { Text("Auto Logout") },
+                            icon = { it() },
                             colors = navigationBottomBarItemColors
                         )
                     }
