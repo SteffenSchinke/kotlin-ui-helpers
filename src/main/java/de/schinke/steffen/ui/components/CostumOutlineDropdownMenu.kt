@@ -24,7 +24,7 @@ fun <T> CostumOutlineDropdownMenu(
     items: List<T>,
     selectedItem: T?,
     onItemSelected: (T) -> Unit,
-    onSelectedItemLabel: (T) -> String,
+    onSelectedItemLabel: @Composable (T) -> String,
     label: String = "Auswahl"
 ) {
     var expanded by remember { mutableStateOf(false) }
